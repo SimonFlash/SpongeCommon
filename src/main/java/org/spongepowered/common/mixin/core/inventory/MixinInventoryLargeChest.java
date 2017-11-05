@@ -28,7 +28,10 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryLargeChest;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.ILockableContainer;
+import org.spongepowered.api.block.tileentity.TileEntity;
+import org.spongepowered.api.block.tileentity.carrier.TileEntityCarrier;
 import org.spongepowered.api.item.inventory.Inventory;
+import org.spongepowered.api.item.inventory.type.CarriedInventory;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -45,8 +48,10 @@ import org.spongepowered.common.item.inventory.lens.impl.collections.SlotCollect
 import org.spongepowered.common.item.inventory.lens.impl.fabric.DefaultInventoryFabric;
 import org.spongepowered.common.item.inventory.lens.impl.minecraft.LargeChestInventoryLens;
 
+import java.util.Optional;
+
 @Mixin(InventoryLargeChest.class)
-public abstract class MixinInventoryLargeChest implements MinecraftInventoryAdapter<IInventory> {
+public abstract class MixinInventoryLargeChest implements MinecraftInventoryAdapter<IInventory>, CarriedInventory<TileEntityCarrier> {
 
     @Shadow @Final private ILockableContainer upperChest;
     @Shadow @Final private ILockableContainer lowerChest;
@@ -84,5 +89,10 @@ public abstract class MixinInventoryLargeChest implements MinecraftInventoryAdap
     @Override
     public Inventory getChild(Lens<IInventory, ItemStack> lens) {
         return null;
+    }
+
+    @Override
+    public Optional<TileEntityCarrier> getCarrier() {
+        return Optional.of(((TileEntityCarrier) upperChest));
     }
 }
