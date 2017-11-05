@@ -54,7 +54,7 @@ import java.util.Optional;
 import java.util.function.Consumer;
 
 @Mixin(CustomInventory.class)
-public abstract class MixinCustomInventory implements MinecraftInventoryAdapter, Inventory, CarriedInventory<Carrier> {
+public abstract class MixinCustomInventory implements MinecraftInventoryAdapter<IInventory>, Inventory, CarriedInventory<Carrier> {
 
     @Shadow(remap = false) protected InventoryArchetype archetype;
     @Shadow(remap = false) private InventoryBasic inv;

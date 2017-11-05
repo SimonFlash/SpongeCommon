@@ -43,7 +43,7 @@ import org.spongepowered.common.item.inventory.lens.slots.SlotLens;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SlotCollection extends DynamicLensCollectionImpl<IInventory, ItemStack> implements SlotProvider<IInventory, ItemStack> {
+public class SlotCollection<TInventory> extends DynamicLensCollectionImpl<TInventory, ItemStack> implements SlotProvider<TInventory, ItemStack> {
 
     public static class Builder {
 
@@ -124,24 +124,24 @@ public class SlotCollection extends DynamicLensCollectionImpl<IInventory, ItemSt
         }
     }
 
-    protected SlotLens<IInventory, ItemStack> createSlotLens(int slotIndex) {
+    protected SlotLens<TInventory, ItemStack> createSlotLens(int slotIndex) {
         return this.builder == null ? new SlotLensImpl(slotIndex, SlotAdapter.class) : this.builder.getProvider(slotIndex).createSlotLens(slotIndex);
     }
 
     @Override
-    public SlotLens<IInventory, ItemStack> getSlot(int index) {
-        return (SlotLens<IInventory, ItemStack>) this.get(index);
+    public SlotLens<TInventory, ItemStack> getSlot(int index) {
+        return (SlotLens<TInventory, ItemStack>) this.get(index);
     }
 
-    public Iterable<Slot> getIterator(InventoryAdapter<IInventory, ItemStack> adapter) {
+    public Iterable<Slot> getIterator(InventoryAdapter<TInventory, ItemStack> adapter) {
         return this.getIterator(adapter, adapter.getInventory(), adapter.getRootLens());
     }
 
-    public Iterable<Slot> getIterator(Inventory parent, InventoryAdapter<IInventory, ItemStack> adapter) {
+    public Iterable<Slot> getIterator(Inventory parent, InventoryAdapter<TInventory, ItemStack> adapter) {
         return this.getIterator(parent, adapter.getInventory(), adapter.getRootLens());
     }
 
-    public Iterable<Slot> getIterator(Inventory parent, Fabric<IInventory> inv, Lens<IInventory, ItemStack> lens) {
+    public Iterable<Slot> getIterator(Inventory parent, Fabric<TInventory> inv, Lens<TInventory, ItemStack> lens) {
         return new SlotCollectionIterator(parent, inv, lens, this);
     }
 

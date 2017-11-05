@@ -30,7 +30,7 @@ import net.minecraft.item.ItemStack;
 import org.spongepowered.common.interfaces.inventory.IMixinSlot;
 import org.spongepowered.common.item.inventory.lens.Fabric;
 
-public class FakeSlotLensImpl extends SlotLensImpl {
+public class FakeSlotLensImpl<TInventory> extends SlotLensImpl<TInventory> {
 
     private Slot slot;
 
@@ -40,12 +40,12 @@ public class FakeSlotLensImpl extends SlotLensImpl {
     }
 
     @Override
-    public ItemStack getStack(Fabric<IInventory> inv) {
+    public ItemStack getStack(Fabric<TInventory> inv) {
         return this.slot.getStack();
     }
 
     @Override
-    public boolean setStack(Fabric<IInventory> inv, ItemStack stack) {
+    public boolean setStack(Fabric<TInventory> inv, ItemStack stack) {
         throw new IllegalStateException(String.format("Cannot set stack for invalid slot %s with id %s!", this.slot, ((IMixinSlot) this.slot).getSlotIndex()));
     }
 }

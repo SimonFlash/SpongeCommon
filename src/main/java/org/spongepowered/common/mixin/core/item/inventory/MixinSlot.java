@@ -47,7 +47,7 @@ import org.spongepowered.common.item.inventory.lens.impl.comp.OrderedInventoryLe
 import org.spongepowered.common.item.inventory.lens.impl.slots.SlotLensImpl;
 
 @Mixin(Slot.class)
-public abstract class MixinSlot implements org.spongepowered.api.item.inventory.Slot, IMixinSlot, MinecraftInventoryAdapter {
+public abstract class MixinSlot implements org.spongepowered.api.item.inventory.Slot, IMixinSlot, MinecraftInventoryAdapter<IInventory> {
 
     @Shadow @Final public int slotIndex;
     @Shadow @Final public IInventory inventory;

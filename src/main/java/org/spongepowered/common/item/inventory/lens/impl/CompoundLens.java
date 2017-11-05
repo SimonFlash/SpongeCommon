@@ -28,7 +28,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import org.spongepowered.api.item.inventory.Inventory;
 import org.spongepowered.api.item.inventory.property.SlotIndex;
-import org.spongepowered.common.item.inventory.adapter.impl.Adapter;
+import org.spongepowered.common.item.inventory.adapter.impl.MinecraftAdapter;
 import org.spongepowered.common.item.inventory.lens.CompoundSlotProvider;
 import org.spongepowered.common.item.inventory.lens.Lens;
 import org.spongepowered.common.item.inventory.lens.SlotProvider;
@@ -82,7 +82,7 @@ public class CompoundLens extends MinecraftLens {
         }
 
         public CompoundLens build(CompoundSlotProvider provider) {
-            return new CompoundLens(provider.size(), Adapter.class, provider, this.lenses);
+            return new CompoundLens(provider.size(), MinecraftAdapter.class, provider, this.lenses);
         }
     }
 }

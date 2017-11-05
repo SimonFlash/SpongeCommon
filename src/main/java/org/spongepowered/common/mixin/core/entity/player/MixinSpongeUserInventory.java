@@ -57,7 +57,7 @@ import org.spongepowered.common.item.inventory.observer.InventoryEventArgs;
 import java.util.Optional;
 
 @Mixin(SpongeUserInventory.class)
-public abstract class MixinSpongeUserInventory implements MinecraftInventoryAdapter, UserInventory<User> {
+public abstract class MixinSpongeUserInventory implements MinecraftInventoryAdapter<IInventory>, UserInventory<User> {
 
     @Shadow(remap = false) @Final public NonNullList<ItemStack> mainInventory;
     @Shadow(remap = false) @Final public NonNullList<ItemStack> armorInventory;

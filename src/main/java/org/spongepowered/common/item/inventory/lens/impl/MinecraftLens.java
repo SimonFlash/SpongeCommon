@@ -62,24 +62,4 @@ public abstract class MinecraftLens extends AbstractLens<IInventory, ItemStack> 
         super(base, size, adapter, slots);
     }
 
-    @SuppressWarnings("unchecked")
-    @Override
-    protected Constructor<InventoryAdapter<IInventory, ItemStack>> getAdapterCtor() throws NoSuchMethodException {
-        try {
-            return (Constructor<InventoryAdapter<IInventory, ItemStack>>) this.adapterType.getConstructor(Fabric.class, this.getClass(), Inventory.class);
-        } catch (Exception ex1) {
-            return (Constructor<InventoryAdapter<IInventory, ItemStack>>) this.adapterType.getConstructor(Fabric.class, Lens.class, Inventory.class);
-        }
-    }
-
-    @Override
-    public int getMaxStackSize(Fabric<IInventory> inv) {
-        return inv.getMaxStackSize();
-    }
-
-    @Override
-    public void invalidate(Fabric<IInventory> inv) {
-        super.invalidate(inv);
-//        inv.markDirty();    // Adapter can decide
-    }
 }

@@ -31,7 +31,7 @@ import org.spongepowered.api.item.inventory.Slot;
 import org.spongepowered.api.item.inventory.property.SlotPos;
 import org.spongepowered.api.item.inventory.transaction.InventoryTransactionResult;
 import org.spongepowered.api.item.inventory.type.Inventory2D;
-import org.spongepowered.common.item.inventory.adapter.impl.Adapter;
+import org.spongepowered.common.item.inventory.adapter.impl.MinecraftAdapter;
 import org.spongepowered.common.item.inventory.adapter.impl.AdapterLogic;
 import org.spongepowered.common.item.inventory.lens.Fabric;
 import org.spongepowered.common.item.inventory.lens.comp.Inventory2DLens;
@@ -66,7 +66,7 @@ public class Inventory2DAdapter extends OrderedInventoryAdapter implements Inven
 
     @Override
     public Optional<Slot> getSlot(SlotPos pos) {
-        return Adapter.forSlot(this.inventory, this.getSlotLens(pos), this);
+        return MinecraftAdapter.forSlot(this.inventory, this.getSlotLens(pos), this);
     }
 
     @Override

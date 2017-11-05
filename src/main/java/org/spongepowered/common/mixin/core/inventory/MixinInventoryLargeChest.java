@@ -46,7 +46,7 @@ import org.spongepowered.common.item.inventory.lens.impl.fabric.DefaultInventory
 import org.spongepowered.common.item.inventory.lens.impl.minecraft.LargeChestInventoryLens;
 
 @Mixin(InventoryLargeChest.class)
-public abstract class MixinInventoryLargeChest implements MinecraftInventoryAdapter {
+public abstract class MixinInventoryLargeChest implements MinecraftInventoryAdapter<IInventory> {
 
     @Shadow @Final private ILockableContainer upperChest;
     @Shadow @Final private ILockableContainer lowerChest;

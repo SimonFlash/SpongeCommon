@@ -24,7 +24,6 @@
  */
 package org.spongepowered.common.item.inventory.adapter.impl;
 
-import net.minecraft.inventory.IInventory;
 import org.spongepowered.api.item.ItemType;
 import org.spongepowered.api.item.inventory.Inventory;
 import org.spongepowered.api.item.inventory.InventoryArchetype;
@@ -42,10 +41,13 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.Optional;
 
-public interface MinecraftInventoryAdapter extends InventoryAdapter<IInventory, net.minecraft.item.ItemStack> {
+public interface MinecraftInventoryAdapter<TInventory> extends InventoryAdapter<TInventory, net.minecraft.item.ItemStack> {
 
     @Override
     default Translation getName() {
+        if (this.getRootLens() == null) {
+            return this.getInventory().getDisplayName();
+        }
         return this.getRootLens().getName(this.getInventory());
     }
 

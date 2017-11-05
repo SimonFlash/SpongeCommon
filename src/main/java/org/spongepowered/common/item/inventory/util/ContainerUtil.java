@@ -69,11 +69,10 @@ import org.spongepowered.common.event.tracking.PhaseContext;
 import org.spongepowered.common.event.tracking.PhaseData;
 import org.spongepowered.common.interfaces.IMixinContainer;
 import org.spongepowered.common.item.inventory.adapter.InventoryAdapter;
-import org.spongepowered.common.item.inventory.adapter.impl.Adapter;
+import org.spongepowered.common.item.inventory.adapter.impl.MinecraftAdapter;
 import org.spongepowered.common.item.inventory.adapter.impl.MinecraftInventoryAdapter;
 import org.spongepowered.common.item.inventory.adapter.impl.slots.CraftingOutputAdapter;
 import org.spongepowered.common.item.inventory.adapter.impl.slots.EquipmentSlotAdapter;
-import org.spongepowered.common.item.inventory.adapter.impl.slots.SlotAdapter;
 import org.spongepowered.common.item.inventory.custom.CustomContainer;
 import org.spongepowered.common.item.inventory.lens.Fabric;
 import org.spongepowered.common.item.inventory.lens.Lens;
@@ -218,7 +217,7 @@ public final class ContainerUtil {
             if (container instanceof InventoryAdapter) {
                 adapter = ((InventoryAdapter) container);
             } else {
-                adapter = new Adapter(MinecraftFabric.of(container), container);
+                adapter = new MinecraftAdapter(MinecraftFabric.of(container), container);
             }
             return ((LensProvider) container).getRootLens(fabric, adapter);
         }
@@ -264,7 +263,7 @@ public final class ContainerUtil {
             if (lens == null && subInventory instanceof LensProvider) // Check if sub-inventory is LensProvider
             {
                 Fabric<IInventory> keyFabric = MinecraftFabric.of(subInventory);
-                lens = ((LensProvider) subInventory).getRootLens(keyFabric, new Adapter(keyFabric, container));
+                lens = ((LensProvider) subInventory).getRootLens(keyFabric, new MinecraftAdapter(keyFabric, container));
             }
             if (lens == null // Unknown Inventory or
                     || lens.slotCount() != slotCount) { // Inventory size <> Lens size
@@ -467,7 +466,7 @@ public final class ContainerUtil {
         return null;
     }
 
-    public static SlotAdapter getSlotAdapter(net.minecraft.inventory.Container container, int slot) {
-        return ((IMixinContainer) container).getSlotAdapter(slot);
+    public static org.spongepowered.api.item.inventory.Slot getSlot(net.minecraft.inventory.Container container, int slot) {
+        return ((IMixinContainer) container).getContainerSlot(slot);
     }
 }

@@ -73,7 +73,7 @@ import java.util.Optional;
         InventoryCrafting.class
 }, priority = 999)
 @Implements(@Interface(iface = Inventory.class, prefix = "inventory$"))
-public abstract class TraitInventoryAdapter implements MinecraftInventoryAdapter {
+public abstract class TraitInventoryAdapter implements MinecraftInventoryAdapter<IInventory> {
 
     protected EmptyInventory empty;
     protected Inventory parent;

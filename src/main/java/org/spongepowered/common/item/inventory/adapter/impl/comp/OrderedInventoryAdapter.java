@@ -33,7 +33,7 @@ import org.spongepowered.api.item.inventory.Slot;
 import org.spongepowered.api.item.inventory.property.SlotIndex;
 import org.spongepowered.api.item.inventory.transaction.InventoryTransactionResult;
 import org.spongepowered.api.item.inventory.type.OrderedInventory;
-import org.spongepowered.common.item.inventory.adapter.impl.Adapter;
+import org.spongepowered.common.item.inventory.adapter.impl.MinecraftAdapter;
 import org.spongepowered.common.item.inventory.adapter.impl.AdapterLogic;
 import org.spongepowered.common.item.inventory.lens.Fabric;
 import org.spongepowered.common.item.inventory.lens.comp.OrderedInventoryLens;
@@ -41,7 +41,7 @@ import org.spongepowered.common.item.inventory.lens.slots.SlotLens;
 
 import java.util.Optional;
 
-public class OrderedInventoryAdapter extends Adapter implements OrderedInventory {
+public class OrderedInventoryAdapter extends MinecraftAdapter implements OrderedInventory {
 
     protected final OrderedInventoryLens<IInventory, net.minecraft.item.ItemStack> orderedLens;
 
@@ -83,7 +83,7 @@ public class OrderedInventoryAdapter extends Adapter implements OrderedInventory
 
     @Override
     public Optional<Slot> getSlot(SlotIndex index) {
-        return Adapter.forSlot(this.inventory, this.getSlotLens(index), this);
+        return MinecraftAdapter.forSlot(this.inventory, this.getSlotLens(index), this);
     }
 
     @Override

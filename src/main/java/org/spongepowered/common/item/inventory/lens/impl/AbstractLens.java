@@ -32,6 +32,7 @@ import com.google.common.collect.ImmutableList.Builder;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntSet;
 import it.unimi.dsi.fastutil.ints.IntSets;
+import net.minecraft.inventory.IInventory;
 import org.spongepowered.api.item.inventory.Inventory;
 import org.spongepowered.api.item.inventory.InventoryProperty;
 import org.spongepowered.api.text.translation.Translation;
@@ -207,7 +208,14 @@ public abstract class AbstractLens<TInventory, TStack> extends ObservableLens<TI
         }
     }
 
-    protected abstract Constructor<InventoryAdapter<TInventory, TStack>> getAdapterCtor() throws NoSuchMethodException;
+    @SuppressWarnings("unchecked")
+    protected Constructor<InventoryAdapter<TInventory, TStack>> getAdapterCtor() throws NoSuchMethodException {
+        try {
+            return (Constructor<InventoryAdapter<TInventory, TStack>>) this.adapterType.getConstructor(Fabric.class, this.getClass(), Inventory.class);
+        } catch (Exception ex1) {
+            return (Constructor<InventoryAdapter<TInventory, TStack>>) this.adapterType.getConstructor(Fabric.class, Lens.class, Inventory.class);
+        }
+    }
 
     @Override
     public TStack getStack(Fabric<TInventory> inv, int ordinal) {
@@ -310,6 +318,11 @@ public abstract class AbstractLens<TInventory, TStack> extends ObservableLens<TI
     public int getRealIndex(Fabric<TInventory> inv, int ordinal) {
         LensHandle<TInventory, TStack> child = this.getLensForOrdinal(ordinal);
         return child.lens.getRealIndex(inv, ordinal - child.ordinal);
+    }
+
+    @Override
+    public int getMaxStackSize(Fabric<TInventory> inv) {
+        return inv.getMaxStackSize();
     }
 
     protected boolean checkOrdinal(int ordinal) {

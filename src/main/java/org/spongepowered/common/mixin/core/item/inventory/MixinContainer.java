@@ -94,7 +94,7 @@ public abstract class MixinContainer implements org.spongepowered.api.item.inven
     private boolean captureInventory = false;
     private List<SlotTransaction> capturedSlotTransactions = new ArrayList<>();
     private Fabric<IInventory> fabric;
-    private SlotCollection slots;
+    private SlotCollection<IInventory> slots;
     private Lens<IInventory, ItemStack> lens;
     private boolean initialized;
     private Map<Integer, SlotAdapter> adapters = new HashMap<>();
@@ -120,7 +120,7 @@ public abstract class MixinContainer implements org.spongepowered.api.item.inven
 
         // If we know the lens, we can cache the adapters now
         if (this.lens != null) {
-            for (org.spongepowered.api.item.inventory.Slot slot : this.slots.getIterator(this, (MinecraftInventoryAdapter) this)) {
+            for (org.spongepowered.api.item.inventory.Slot slot : this.slots.getIterator(this, (MinecraftInventoryAdapter<IInventory>) this)) {
                 this.adapters.put(((SlotAdapter) slot).slotNumber, (SlotAdapter) slot);
             }
         }
@@ -183,9 +183,9 @@ public abstract class MixinContainer implements org.spongepowered.api.item.inven
                     final ItemStackSnapshot newItem = itemstack.isEmpty() ? ItemStackSnapshot.NONE
                             : ((org.spongepowered.api.item.inventory.ItemStack) itemstack).createSnapshot();
 
-                    SlotAdapter adapter = null;
+                    org.spongepowered.api.item.inventory.Slot adapter = null;
                     try {
-                        adapter = this.getSlotAdapter(i);
+                        adapter = this.getContainerSlot(i);
                         this.capturedSlotTransactions.add(new SlotTransaction(adapter, originalItem, newItem));
                     } catch (IndexOutOfBoundsException e) {
                         SpongeImpl.getLogger().error("SlotIndex out of LensBounds! Did the Container change after creation?", e);
@@ -226,7 +226,7 @@ public abstract class MixinContainer implements org.spongepowered.api.item.inven
                 ItemStackSnapshot newItem =
                         itemstack.isEmpty() ? ItemStackSnapshot.NONE : ((org.spongepowered.api.item.inventory.ItemStack) itemstack).createSnapshot();
 
-                SlotAdapter adapter = this.getSlotAdapter(slotId);
+                org.spongepowered.api.item.inventory.Slot adapter = this.getContainerSlot(slotId);
                 this.capturedSlotTransactions.add(new SlotTransaction(adapter, originalItem, newItem));
             }
         }
@@ -278,8 +278,8 @@ public abstract class MixinContainer implements org.spongepowered.api.item.inven
     }
 
     @Override
-    public SlotAdapter getSlotAdapter(int slot) {
-        SlotAdapter adapter = this.adapters.get(slot);
+    public org.spongepowered.api.item.inventory.Slot getContainerSlot(int slot) {
+        org.spongepowered.api.item.inventory.Slot adapter = this.adapters.get(slot);
         if (adapter == null) // Slot is not in Lens
         {
             Slot mcSlot = this.inventorySlots.get(slot); // Try falling back to vanilla slot
@@ -288,7 +288,7 @@ public abstract class MixinContainer implements org.spongepowered.api.item.inven
                 SpongeImpl.getLogger().warn("Could not find slot #%s in Container %s", slot, getClass().getName());
                 return null;
             }
-            return new SlotAdapter(mcSlot);
+            return ((org.spongepowered.api.item.inventory.Slot) mcSlot);
         }
         return adapter;
     }

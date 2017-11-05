@@ -33,7 +33,7 @@ import org.spongepowered.api.item.inventory.transaction.InventoryTransactionResu
 import org.spongepowered.api.item.inventory.type.GridInventory;
 import org.spongepowered.api.item.inventory.type.InventoryColumn;
 import org.spongepowered.api.item.inventory.type.InventoryRow;
-import org.spongepowered.common.item.inventory.adapter.impl.Adapter;
+import org.spongepowered.common.item.inventory.adapter.impl.MinecraftAdapter;
 import org.spongepowered.common.item.inventory.adapter.impl.AdapterLogic;
 import org.spongepowered.common.item.inventory.lens.Fabric;
 import org.spongepowered.common.item.inventory.lens.comp.GridInventoryLens;
@@ -77,7 +77,7 @@ public class GridInventoryAdapter extends Inventory2DAdapter implements GridInve
 
     @Override
     public Optional<Slot> getSlot(int x, int y) {
-        return Adapter.forSlot(this.inventory, this.getSlotLens(x, y), this);
+        return MinecraftAdapter.forSlot(this.inventory, this.getSlotLens(x, y), this);
     }
 
     @Override
