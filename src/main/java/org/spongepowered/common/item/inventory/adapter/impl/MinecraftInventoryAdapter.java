@@ -56,28 +56,28 @@ public interface MinecraftInventoryAdapter extends InventoryAdapter<IInventory, 
 
     @Override
     default Optional<ItemStack> poll() {
-        return Adapter.Logic.pollSequential(this);
+        return AdapterLogic.pollSequential(this);
     }
 
     @Override
     default Optional<ItemStack> poll(int limit) {
-        return Adapter.Logic.pollSequential(this, limit);
+        return AdapterLogic.pollSequential(this, limit);
     }
 
     @Override
     default Optional<ItemStack> peek() {
-        return Adapter.Logic.peekSequential(this);
+        return AdapterLogic.peekSequential(this);
     }
 
     @Override
     default Optional<ItemStack> peek(int limit) {
-        return Adapter.Logic.peekSequential(this, limit);
+        return AdapterLogic.peekSequential(this, limit);
     }
 
     @Override
     default InventoryTransactionResult offer(ItemStack stack) {
         //        try {
-        return Adapter.Logic.appendSequential(this, stack);
+        return AdapterLogic.appendSequential(this, stack);
         //        } catch (Exception ex) {
         //            return false;
         //        }
@@ -85,22 +85,22 @@ public interface MinecraftInventoryAdapter extends InventoryAdapter<IInventory, 
 
     @Override
     default InventoryTransactionResult set(ItemStack stack) {
-        return Adapter.Logic.insertSequential(this, stack);
+        return AdapterLogic.insertSequential(this, stack);
     }
 
     @Override
     default int size() {
-        return Adapter.Logic.countStacks(this);
+        return AdapterLogic.countStacks(this);
     }
 
     @Override
     default int totalItems() {
-        return Adapter.Logic.countItems(this);
+        return AdapterLogic.countItems(this);
     }
 
     @Override
     default int capacity() {
-        return Adapter.Logic.getCapacity(this);
+        return AdapterLogic.getCapacity(this);
     }
 
     @Override
@@ -110,17 +110,17 @@ public interface MinecraftInventoryAdapter extends InventoryAdapter<IInventory, 
 
     @Override
     default boolean contains(ItemStack stack) {
-        return Adapter.Logic.contains(this, stack);
+        return AdapterLogic.contains(this, stack);
     }
 
     @Override
     default boolean containsAny(ItemStack stack) {
-        return Adapter.Logic.contains(this, stack, 1);
+        return AdapterLogic.contains(this, stack, 1);
     }
 
     @Override
     default boolean contains(ItemType type) {
-        return Adapter.Logic.contains(this, type);
+        return AdapterLogic.contains(this, type);
     }
 
     @Override
@@ -136,13 +136,13 @@ public interface MinecraftInventoryAdapter extends InventoryAdapter<IInventory, 
     @SuppressWarnings("unchecked")
     @Override
     default <T extends InventoryProperty<?, ?>> Collection<T> getProperties(Inventory child, Class<T> property) {
-        return (Collection<T>) Adapter.Logic.getProperties(this, child, property);
+        return (Collection<T>) AdapterLogic.getProperties(this, child, property);
     }
 
     @Override
     default <T extends InventoryProperty<?, ?>> Collection<T> getProperties(Class<T> property) {
         if (this.parent() == this) {
-            return Adapter.Logic.getRootProperties(this, property);
+            return AdapterLogic.getRootProperties(this, property);
         }
         return this.parent().getProperties(this, property);
     }
@@ -150,7 +150,7 @@ public interface MinecraftInventoryAdapter extends InventoryAdapter<IInventory, 
     @SuppressWarnings("unchecked")
     @Override
     default <T extends InventoryProperty<?, ?>> Optional<T> getProperty(Inventory child, Class<T> property, Object key) {
-        for (InventoryProperty<?, ?> prop : Adapter.Logic.getProperties(this, child, property)) {
+        for (InventoryProperty<?, ?> prop : AdapterLogic.getProperties(this, child, property)) {
             if (key.equals(prop.getKey())) {
                 return Optional.of((T)prop);
             }
@@ -161,7 +161,7 @@ public interface MinecraftInventoryAdapter extends InventoryAdapter<IInventory, 
     @Override
     default <T extends InventoryProperty<?, ?>> Optional<T> getProperty(Class<T> property, Object key) {
         if (this.parent() == this) {
-            return Adapter.Logic.getRootProperty(this, property, key);
+            return AdapterLogic.getRootProperty(this, property, key);
         }
         return this.parent().getProperty(this, property, key);
     }

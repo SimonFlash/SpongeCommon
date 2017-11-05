@@ -34,6 +34,7 @@ import org.spongepowered.api.item.inventory.property.SlotIndex;
 import org.spongepowered.api.item.inventory.transaction.InventoryTransactionResult;
 import org.spongepowered.api.item.inventory.type.OrderedInventory;
 import org.spongepowered.common.item.inventory.adapter.impl.Adapter;
+import org.spongepowered.common.item.inventory.adapter.impl.AdapterLogic;
 import org.spongepowered.common.item.inventory.lens.Fabric;
 import org.spongepowered.common.item.inventory.lens.comp.OrderedInventoryLens;
 import org.spongepowered.common.item.inventory.lens.slots.SlotLens;
@@ -87,27 +88,27 @@ public class OrderedInventoryAdapter extends Adapter implements OrderedInventory
 
     @Override
     public Optional<ItemStack> poll(SlotIndex index) {
-        return Adapter.Logic.pollSequential(this.inventory, this.getSlotLens(index));
+        return AdapterLogic.pollSequential(this.inventory, this.getSlotLens(index));
     }
 
     @Override
     public Optional<org.spongepowered.api.item.inventory.ItemStack> poll(SlotIndex index, int limit) {
-        return Adapter.Logic.pollSequential(this.inventory, this.getSlotLens(index), limit);
+        return AdapterLogic.pollSequential(this.inventory, this.getSlotLens(index), limit);
     }
 
     @Override
     public Optional<org.spongepowered.api.item.inventory.ItemStack> peek(SlotIndex index) {
-        return Adapter.Logic.peekSequential(this.inventory, this.getSlotLens(index));
+        return AdapterLogic.peekSequential(this.inventory, this.getSlotLens(index));
     }
 
     @Override
     public Optional<org.spongepowered.api.item.inventory.ItemStack> peek(SlotIndex index, int limit) {
-        return Adapter.Logic.peekSequential(this.inventory, this.getSlotLens(index), limit);
+        return AdapterLogic.peekSequential(this.inventory, this.getSlotLens(index), limit);
     }
 
     @Override
     public InventoryTransactionResult set(SlotIndex index, org.spongepowered.api.item.inventory.ItemStack stack) {
-        return Adapter.Logic.insertSequential(this.inventory, this.getSlotLens(index), stack);
+        return AdapterLogic.insertSequential(this.inventory, this.getSlotLens(index), stack);
     }
 
 }
