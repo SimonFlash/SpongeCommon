@@ -352,7 +352,7 @@
         "item.inventory.MixinCustomContainer",
         "item.inventory.MixinSlot",
         "item.inventory.MixinSlotCrafting",
-        "item.inventory.TraitInventoryAdapter",
+        "item.inventory.MixinInventory",
         "item.inventory.TraitInventoryObservable",
         "item.recipe.crafting.MixinIngredient",
         "item.recipe.crafting.MixinIRecipe",
