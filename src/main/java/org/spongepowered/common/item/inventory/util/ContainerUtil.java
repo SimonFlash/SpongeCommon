@@ -86,9 +86,11 @@ import org.spongepowered.common.item.inventory.lens.impl.comp.CraftingInventoryL
 import org.spongepowered.common.item.inventory.lens.impl.comp.GridInventoryLensImpl;
 import org.spongepowered.common.item.inventory.lens.impl.comp.HotbarLensImpl;
 import org.spongepowered.common.item.inventory.lens.impl.comp.Inventory2DLensImpl;
+import org.spongepowered.common.item.inventory.lens.impl.comp.MainPlayerInventoryLensImpl;
 import org.spongepowered.common.item.inventory.lens.impl.comp.OrderedInventoryLensImpl;
 import org.spongepowered.common.item.inventory.lens.impl.minecraft.BrewingStandInventoryLens;
 import org.spongepowered.common.item.inventory.lens.impl.minecraft.FurnaceInventoryLens;
+import org.spongepowered.common.item.inventory.lens.impl.minecraft.LargeChestInventoryLens;
 import org.spongepowered.common.item.inventory.lens.impl.minecraft.PlayerInventoryLens;
 import org.spongepowered.common.item.inventory.lens.impl.minecraft.container.ContainerLens;
 import org.spongepowered.common.item.inventory.lens.impl.slots.CraftingOutputSlotLensImpl;
@@ -273,8 +275,9 @@ public final class ContainerUtil {
                     lens = new SlotLensImpl(index);
                 } else if ((lens instanceof PlayerInventoryLens || playerLens) && slotCount == 36) { // Player
                     // Player Inventory + Hotbar
-                    lenses.add(new GridInventoryLensImpl(index, 9, 3, 9, slots));
-                    lenses.add(new HotbarLensImpl(index + 27, 9, slots));
+                    lenses.add(new MainPlayerInventoryLensImpl(index, 9, 4, 9, slots));
+                    //lenses.add(new GridInventoryLensImpl(index, 9, 3, 9, slots));
+                    //lenses.add(new HotbarLensImpl(index + 27, 9, slots));
                     lens = null;
                 }
                 else if (subInventory instanceof InventoryBasic && subInventory.getClass().isAnonymousClass()) {
@@ -304,6 +307,9 @@ public final class ContainerUtil {
 
     private static Lens<IInventory, ItemStack> copyLens(int base, InventoryAdapter<IInventory, ItemStack> adapter, Lens<IInventory, ItemStack> lens, SlotCollection slots)
     {
+        if (lens instanceof LargeChestInventoryLens) {
+            return new LargeChestInventoryLens(base, adapter, slots);
+        }
         if (lens instanceof FurnaceInventoryLens) {
             return new FurnaceInventoryLens(base, adapter, slots);
         }

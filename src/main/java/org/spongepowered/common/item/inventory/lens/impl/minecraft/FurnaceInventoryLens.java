@@ -29,13 +29,13 @@ import net.minecraft.item.ItemStack;
 import org.spongepowered.api.item.inventory.property.SlotIndex;
 import org.spongepowered.common.item.inventory.adapter.InventoryAdapter;
 import org.spongepowered.common.item.inventory.lens.SlotProvider;
-import org.spongepowered.common.item.inventory.lens.impl.MinecraftLens;
+import org.spongepowered.common.item.inventory.lens.impl.RealLens;
 import org.spongepowered.common.item.inventory.lens.impl.comp.OrderedInventoryLensImpl;
 import org.spongepowered.common.item.inventory.lens.impl.slots.FuelSlotLensImpl;
 import org.spongepowered.common.item.inventory.lens.impl.slots.InputSlotLensImpl;
 import org.spongepowered.common.item.inventory.lens.impl.slots.OutputSlotLensImpl;
 
-public class FurnaceInventoryLens extends MinecraftLens {
+public class FurnaceInventoryLens extends RealLens {
 
     private InputSlotLensImpl input;
     private FuelSlotLensImpl fuel;
@@ -47,18 +47,19 @@ public class FurnaceInventoryLens extends MinecraftLens {
 
     public FurnaceInventoryLens(int base, InventoryAdapter<IInventory, ItemStack> adapter, SlotProvider<IInventory, ItemStack> slots) {
         super(base, adapter.getInventory().getSize(), adapter.getClass(), slots);
+        this.init(slots);
     }
 
     @Override
     protected void init(SlotProvider<IInventory, ItemStack> slots) {
-        this.addSpanningChild(new OrderedInventoryLensImpl(0, 3, 1, slots));
+        this.addChild(new OrderedInventoryLensImpl(0, 3, 1, slots));
 
         this.input = new InputSlotLensImpl(0, (i) -> true, (i) -> true);
         this.fuel = new FuelSlotLensImpl(1, (i) -> true, (i) -> true);       // TODO SlotFurnaceFuel
         this.output = new OutputSlotLensImpl(2, (i) -> false, (i) -> false); // SlotFurnaceOutput
 
-        this.addChild(this.input, new SlotIndex(0));
-        this.addChild(this.fuel, new SlotIndex(1));
-        this.addChild(this.output, new SlotIndex(2));
+        this.addSpanningChild(this.input, new SlotIndex(0));
+        this.addSpanningChild(this.fuel, new SlotIndex(1));
+        this.addSpanningChild(this.output, new SlotIndex(2));
     }
 }

@@ -29,11 +29,14 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import org.spongepowered.api.item.inventory.Inventory;
+import org.spongepowered.common.item.inventory.adapter.InvalidAdapterException;
 import org.spongepowered.common.item.inventory.adapter.InventoryAdapter;
+import org.spongepowered.common.item.inventory.adapter.impl.MinecraftAdapter;
 import org.spongepowered.common.item.inventory.lens.Fabric;
 import org.spongepowered.common.item.inventory.lens.Lens;
 import org.spongepowered.common.item.inventory.lens.SlotProvider;
 import org.spongepowered.common.item.inventory.lens.impl.collections.SlotCollection;
+import org.spongepowered.common.item.inventory.lens.impl.fabric.ContainerFabric;
 
 import java.lang.reflect.Constructor;
 import java.util.HashMap;
@@ -42,7 +45,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 @SuppressWarnings("rawtypes")
-public abstract class MinecraftLens extends AbstractLens<IInventory, ItemStack> {
+public abstract class RealLens extends AbstractLens<IInventory, ItemStack> {
 
     // InventoryAdapterClass -> LensClass -> Size -> ReusableLens
     private static Map<Class<? extends InventoryAdapter>, Map<Class<? extends Lens<IInventory, ItemStack>>, Int2ObjectMap<ReusableLens>>> reusableLenses = new HashMap<>();
@@ -54,12 +57,46 @@ public abstract class MinecraftLens extends AbstractLens<IInventory, ItemStack> 
         return lenses.computeIfAbsent(adapter.getInventory().getSize(), k -> new ReusableLens(slots.get(), lens, adapter.getClass()));
     }
 
-    public MinecraftLens(int base, int size, Class<? extends Inventory> adapterType, SlotProvider<IInventory, ItemStack> slots) {
+    public RealLens(int base, int size, Class<? extends Inventory> adapterType, SlotProvider<IInventory, ItemStack> slots) {
         super(base, size, adapterType, slots);
     }
 
-    public MinecraftLens(int base, int size, InventoryAdapter<IInventory, ItemStack> adapter, SlotProvider<IInventory, ItemStack> slots) {
+    public RealLens(int base, int size, InventoryAdapter<IInventory, ItemStack> adapter, SlotProvider<IInventory, ItemStack> slots) {
         super(base, size, adapter, slots);
     }
+
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public InventoryAdapter<IInventory, ItemStack> getAdapter(Fabric<IInventory> inv, Inventory parent) {
+        if (inv instanceof ContainerFabric) {
+            return new MinecraftAdapter(inv, this, parent);
+        }
+        IInventory base = inv.get(this.base);
+        if (!(base instanceof InventoryAdapter)) {
+            return null; // TODO IInventory Wrapper
+        }
+        return ((InventoryAdapter) base);
+    }
+
+    /*
+    protected InventoryAdapter<TInventory, TStack> createAdapter(Fabric<TInventory> inv, Inventory parent) {
+        try {
+            Constructor<InventoryAdapter<TInventory, TStack>> ctor = this.getAdapterCtor();
+            return ctor.newInstance(inv, this, parent);
+        } catch (Exception ex) {
+            throw new InvalidAdapterException("Adapter class for " + this.getClass().getSimpleName() + " does not have a constructor which accepts this lens", ex);
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    protected Constructor<InventoryAdapter<TInventory, TStack>> getAdapterCtor() throws NoSuchMethodException {
+        try {
+            return (Constructor<InventoryAdapter<TInventory, TStack>>) this.adapterType.getConstructor(Fabric.class, this.getClass(), Inventory.class);
+        } catch (Exception ex1) {
+            return (Constructor<InventoryAdapter<TInventory, TStack>>) this.adapterType.getConstructor(Fabric.class, Lens.class, Inventory.class);
+        }
+    }
+    */
 
 }

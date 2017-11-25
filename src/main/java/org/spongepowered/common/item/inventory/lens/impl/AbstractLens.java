@@ -59,8 +59,6 @@ import java.util.NoSuchElementException;
 
 public abstract class AbstractLens<TInventory, TStack> extends ObservableLens<TInventory, TStack> implements Observer<InventoryEventArgs> {
 
-    protected final InventoryAdapter<TInventory, TStack> adapter;
-    
     protected final Class<? extends Inventory> adapterType;
     
     protected final int base;
@@ -78,26 +76,19 @@ public abstract class AbstractLens<TInventory, TStack> extends ObservableLens<TI
     private int maxOrdinal = 0;
     
     public AbstractLens(int base, int size, InventoryAdapter<TInventory, TStack> adapter, SlotProvider<TInventory, TStack> slots) {
-        this(base, size, checkNotNull(adapter, "adapter"), adapter.getClass(), slots);
-    }
-    
-    public AbstractLens(int base, int size, Class<? extends Inventory> adapterType, SlotProvider<TInventory, TStack> slots) {
-        this(base, size, null, checkNotNull(adapterType, "adapterType"), slots);
+        this(base, size, adapter.getClass(), slots);
     }
 
-    public AbstractLens(int base, int size, InventoryAdapter<TInventory, TStack> adapter, Class<? extends Inventory> adapterType, SlotProvider<TInventory, TStack> slots) {
+    public AbstractLens(int base, int size, Class<? extends Inventory> adapterType, SlotProvider<TInventory, TStack> slots) {
         checkArgument(base >= 0, "Invalid offset: %s", base);
         checkArgument(size > 0, "Invalid size: %s", size);
-        
+        checkNotNull(adapterType, "adapterType");
+
         this.base = base;
         this.size = size;
         this.adapterType = adapterType;
-        this.adapter = adapter;
-        
+
         this.prepare();
-        if (!this.isDelayedInit()) {
-            this.init(adapter, slots);
-        }
     }
 
     protected void prepare() {
@@ -120,10 +111,6 @@ public abstract class AbstractLens<TInventory, TStack> extends ObservableLens<TI
         } catch (NoSuchElementException ex) {
             throw new InvalidLensDefinitionException("Invalid lens definition, the lens referenced slots which do not exist.", ex);
         }
-    }
-
-    protected boolean isDelayedInit() {
-        return false;
     }
 
     /**
@@ -185,38 +172,6 @@ public abstract class AbstractLens<TInventory, TStack> extends ObservableLens<TI
         return this.adapterType;
     }
     
-    @SuppressWarnings("unchecked")
-    @Override
-    public InventoryAdapter<TInventory, TStack> getAdapter(Fabric<TInventory> inv, Inventory parent) {
-        if (this.adapter != null) {
-            return this.adapter;
-        }
-        
-        if (inv instanceof InventoryAdapter) {
-            return (InventoryAdapter<TInventory, TStack>) inv;
-        }
-
-        return this.createAdapter(inv, parent);
-    }
-
-    protected InventoryAdapter<TInventory, TStack> createAdapter(Fabric<TInventory> inv, Inventory parent) {
-        try {
-            Constructor<InventoryAdapter<TInventory, TStack>> ctor = this.getAdapterCtor();
-            return ctor.newInstance(inv, this, parent);
-        } catch (Exception ex) {
-            throw new InvalidAdapterException("Adapter class for " + this.getClass().getSimpleName() + " does not have a constructor which accepts this lens", ex);
-        }
-    }
-
-    @SuppressWarnings("unchecked")
-    protected Constructor<InventoryAdapter<TInventory, TStack>> getAdapterCtor() throws NoSuchMethodException {
-        try {
-            return (Constructor<InventoryAdapter<TInventory, TStack>>) this.adapterType.getConstructor(Fabric.class, this.getClass(), Inventory.class);
-        } catch (Exception ex1) {
-            return (Constructor<InventoryAdapter<TInventory, TStack>>) this.adapterType.getConstructor(Fabric.class, Lens.class, Inventory.class);
-        }
-    }
-
     @Override
     public TStack getStack(Fabric<TInventory> inv, int ordinal) {
         LensHandle<TInventory, TStack> lens = this.getLensForOrdinal(ordinal);

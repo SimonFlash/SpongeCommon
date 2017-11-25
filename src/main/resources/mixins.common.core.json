@@ -344,7 +344,6 @@
         "item.data.MixinItemWrittenBook",
         "item.inventory.MixinContainer",
         "item.inventory.MixinContainerCanInteract",
-        "item.inventory.MixinContainerChest",
         "item.inventory.MixinContainerCrafting",
         "item.inventory.MixinContainerHorseChest",
         "item.inventory.MixinContainerPlayer",

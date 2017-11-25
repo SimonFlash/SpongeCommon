@@ -28,7 +28,6 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryLargeChest;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.ILockableContainer;
-import org.spongepowered.api.block.tileentity.TileEntity;
 import org.spongepowered.api.block.tileentity.carrier.TileEntityCarrier;
 import org.spongepowered.api.item.inventory.Inventory;
 import org.spongepowered.api.item.inventory.type.CarriedInventory;
@@ -42,10 +41,10 @@ import org.spongepowered.common.item.inventory.adapter.impl.MinecraftInventoryAd
 import org.spongepowered.common.item.inventory.lens.Fabric;
 import org.spongepowered.common.item.inventory.lens.Lens;
 import org.spongepowered.common.item.inventory.lens.SlotProvider;
-import org.spongepowered.common.item.inventory.lens.impl.MinecraftLens;
+import org.spongepowered.common.item.inventory.lens.impl.RealLens;
 import org.spongepowered.common.item.inventory.lens.impl.ReusableLens;
 import org.spongepowered.common.item.inventory.lens.impl.collections.SlotCollection;
-import org.spongepowered.common.item.inventory.lens.impl.fabric.DefaultInventoryFabric;
+import org.spongepowered.common.item.inventory.lens.impl.fabric.IInventoryFabric;
 import org.spongepowered.common.item.inventory.lens.impl.minecraft.LargeChestInventoryLens;
 
 import java.util.Optional;
@@ -62,8 +61,8 @@ public abstract class MixinInventoryLargeChest implements MinecraftInventoryAdap
 
     @Inject(method = "<init>", at = @At("RETURN"), remap = false)
     private void onConstructed(CallbackInfo ci) {
-        this.inventory = new DefaultInventoryFabric((IInventory) this);
-        ReusableLens<LargeChestInventoryLens> reuseLens = MinecraftLens.getLens(LargeChestInventoryLens.class,
+        this.inventory = new IInventoryFabric((IInventory) this);
+        ReusableLens<LargeChestInventoryLens> reuseLens = RealLens.getLens(LargeChestInventoryLens.class,
                 this,
                 s -> new LargeChestInventoryLens(this, s),
                 () -> new SlotCollection.Builder().add(this.inventory.getSize()).build());

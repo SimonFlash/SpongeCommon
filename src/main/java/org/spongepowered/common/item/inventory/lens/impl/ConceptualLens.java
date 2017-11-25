@@ -22,23 +22,23 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.spongepowered.common.mixin.core.item.inventory;
+package org.spongepowered.common.item.inventory.lens.impl;
 
-import net.minecraft.inventory.ContainerChest;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
-import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.api.item.inventory.Inventory;
 import org.spongepowered.common.item.inventory.adapter.InventoryAdapter;
-import org.spongepowered.common.item.inventory.lens.Fabric;
-import org.spongepowered.common.item.inventory.lens.Lens;
-import org.spongepowered.common.item.inventory.lens.LensProvider;
-import org.spongepowered.common.item.inventory.lens.impl.minecraft.container.ContainerChestInventoryLens;
+import org.spongepowered.common.item.inventory.lens.SlotProvider;
 
-@Mixin(ContainerChest.class)
-public abstract class MixinContainerChest extends MixinContainer implements LensProvider<IInventory, ItemStack> {
+@SuppressWarnings("rawtypes")
+public abstract class ConceptualLens extends AbstractLens<IInventory, ItemStack> {
 
-    @Override
-    public Lens<IInventory, ItemStack> getRootLens(Fabric<IInventory> fabric, InventoryAdapter<IInventory, ItemStack> adapter) {
-        return new ContainerChestInventoryLens(adapter, inventory$getSlotProvider(), ((ContainerChest) (Object)this).numRows);
+    public ConceptualLens(int base, int size, Class<? extends Inventory> adapterType, SlotProvider<IInventory, ItemStack> slots) {
+        super(base, size, adapterType, slots);
     }
+
+    public ConceptualLens(int base, int size, InventoryAdapter<IInventory, ItemStack> adapter, SlotProvider<IInventory, ItemStack> slots) {
+        super(base, size, adapter, slots);
+    }
+
 }

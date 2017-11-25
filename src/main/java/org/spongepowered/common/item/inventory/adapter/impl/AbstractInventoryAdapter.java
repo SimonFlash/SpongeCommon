@@ -51,7 +51,7 @@ import java.util.Optional;
 
 import javax.annotation.Nullable;
 
-public abstract class AbstractInventoryAdapter<TInventory> implements MinecraftInventoryAdapter<TInventory> {
+public class AbstractInventoryAdapter<TInventory> implements MinecraftInventoryAdapter<TInventory> {
 
     public static final Translation DEFAULT_NAME = new SpongeTranslation("inventory.default.title");
 

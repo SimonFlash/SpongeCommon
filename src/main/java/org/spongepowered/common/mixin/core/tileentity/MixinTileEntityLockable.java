@@ -53,7 +53,7 @@ import org.spongepowered.common.item.inventory.lens.Lens;
 import org.spongepowered.common.item.inventory.lens.SlotProvider;
 import org.spongepowered.common.item.inventory.lens.impl.collections.SlotCollection;
 import org.spongepowered.common.item.inventory.lens.impl.comp.OrderedInventoryLensImpl;
-import org.spongepowered.common.item.inventory.lens.impl.fabric.DefaultInventoryFabric;
+import org.spongepowered.common.item.inventory.lens.impl.fabric.IInventoryFabric;
 
 import java.util.List;
 import java.util.Optional;
@@ -74,7 +74,7 @@ public abstract class MixinTileEntityLockable extends MixinTileEntity implements
 
     @Inject(method = "<init>", at = @At("RETURN"))
     private void onConstructed(CallbackInfo ci) {
-        this.fabric = new DefaultInventoryFabric(this);
+        this.fabric = new IInventoryFabric(this);
     }
 
     @Override

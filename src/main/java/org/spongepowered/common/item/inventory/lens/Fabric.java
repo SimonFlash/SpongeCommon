@@ -26,6 +26,7 @@ package org.spongepowered.common.item.inventory.lens;
 
 import net.minecraft.item.ItemStack;
 import org.spongepowered.api.text.translation.Translation;
+import org.spongepowered.common.item.inventory.adapter.InventoryAdapter;
 
 import java.util.Collection;
 
@@ -65,5 +66,4 @@ public interface Fabric<TInventory> {
     void clear();
 
     void markDirty();
-
 }

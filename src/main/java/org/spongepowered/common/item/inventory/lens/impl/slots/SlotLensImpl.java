@@ -72,7 +72,7 @@ public class SlotLensImpl<TInventory> extends AbstractLens<TInventory, ItemStack
 
     @Override
     public InventoryAdapter<TInventory, ItemStack> getAdapter(Fabric<TInventory> inv, Inventory parent) {
-        return new SlotAdapter(inv, this, parent);
+        return new SlotAdapter<>(inv, this, parent);
     }
 
     @Override
@@ -141,5 +141,4 @@ public class SlotLensImpl<TInventory> extends AbstractLens<TInventory, ItemStack
     public boolean isSubsetOf(Collection<Lens<TInventory, ItemStack>> c) {
         return false;
     }
-
 }

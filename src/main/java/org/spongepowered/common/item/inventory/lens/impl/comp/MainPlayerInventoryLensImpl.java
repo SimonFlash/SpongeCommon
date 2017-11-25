@@ -52,8 +52,8 @@ public class MainPlayerInventoryLensImpl extends GridInventoryLensImpl implement
     }
 
     @Override
-    protected void init(InventoryAdapter<IInventory, ItemStack> adapter, SlotProvider<IInventory, ItemStack> slots) {
-        super.init(adapter, slots);
+    protected void init(SlotProvider<IInventory, ItemStack> slots) {
+        super.init(slots);
 
         int base = this.base;
         int INVENTORY_WIDTH = InventoryPlayer.getHotbarSize();
@@ -61,8 +61,8 @@ public class MainPlayerInventoryLensImpl extends GridInventoryLensImpl implement
         base += INVENTORY_WIDTH;
         this.grid = new GridInventoryLensImpl(base, INVENTORY_WIDTH, MAIN_INVENTORY_HEIGHT, INVENTORY_WIDTH, slots);
 
-        this.addChild(this.hotbar);
-        this.addChild(this.grid);
+        this.addSpanningChild(this.hotbar);
+        this.addSpanningChild(this.grid);
     }
 
     @Override

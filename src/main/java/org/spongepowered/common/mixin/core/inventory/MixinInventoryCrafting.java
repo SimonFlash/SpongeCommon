@@ -25,7 +25,6 @@
 package org.spongepowered.common.mixin.core.inventory;
 
 import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.InventoryBasic;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
@@ -44,7 +43,7 @@ import org.spongepowered.common.item.inventory.lens.LensProvider;
 import org.spongepowered.common.item.inventory.lens.SlotProvider;
 import org.spongepowered.common.item.inventory.lens.impl.collections.SlotCollection;
 import org.spongepowered.common.item.inventory.lens.impl.comp.OrderedInventoryLensImpl;
-import org.spongepowered.common.item.inventory.lens.impl.fabric.DefaultInventoryFabric;
+import org.spongepowered.common.item.inventory.lens.impl.fabric.IInventoryFabric;
 
 @Mixin(InventoryCrafting.class)
 @Implements(value = @Interface(iface = MinecraftInventoryAdapter.class, prefix = "inventory$"))
@@ -57,7 +56,7 @@ public abstract class MixinInventoryCrafting implements IInventory, LensProvider
 
     @Inject(method = "<init>", at = @At("RETURN"))
     public void onConstructed(CallbackInfo ci) {
-        this.fabric = new DefaultInventoryFabric(this);
+        this.fabric = new IInventoryFabric(this);
         this.slots = new SlotCollection.Builder().add(this.stackList.size()).build();
         this.lens = getRootLens(fabric, ((InventoryAdapter) this));
     }

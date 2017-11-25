@@ -36,7 +36,7 @@ import org.spongepowered.common.item.inventory.adapter.InventoryAdapter;
 import org.spongepowered.common.item.inventory.adapter.impl.AbstractInventoryAdapter;
 import org.spongepowered.common.item.inventory.lens.Fabric;
 import org.spongepowered.common.item.inventory.lens.impl.fabric.ContainerFabric;
-import org.spongepowered.common.item.inventory.lens.impl.fabric.DelegatingFabric;
+import org.spongepowered.common.item.inventory.lens.impl.fabric.SlotFabric;
 import org.spongepowered.common.item.inventory.lens.impl.slots.FakeSlotLensImpl;
 import org.spongepowered.common.item.inventory.lens.impl.slots.SlotLensImpl;
 import org.spongepowered.common.item.inventory.lens.slots.SlotLens;
@@ -239,8 +239,8 @@ public class SlotAdapter<TInventory> extends AbstractInventoryAdapter<TInventory
     public Slot transform(Type type) {
         switch (type) {
             case INVENTORY:
-                if (this.inventory instanceof DelegatingFabric) {
-                    return ((Slot) ((DelegatingFabric) this.inventory).getDelegate());
+                if (this.inventory instanceof SlotFabric) {
+                    return ((Slot) ((SlotFabric) this.inventory).getDelegate());
                 }
                 if (this.inventory instanceof ContainerFabric) {
                     return ((Slot) ((ContainerFabric) this.inventory).getContainer().getSlot(this.slotNumber));
