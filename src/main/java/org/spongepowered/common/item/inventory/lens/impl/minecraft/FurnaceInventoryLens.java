@@ -29,12 +29,13 @@ import net.minecraft.item.ItemStack;
 import org.spongepowered.api.item.inventory.property.SlotIndex;
 import org.spongepowered.common.item.inventory.adapter.InventoryAdapter;
 import org.spongepowered.common.item.inventory.lens.SlotProvider;
+import org.spongepowered.common.item.inventory.lens.impl.MinecraftLens;
 import org.spongepowered.common.item.inventory.lens.impl.comp.OrderedInventoryLensImpl;
 import org.spongepowered.common.item.inventory.lens.impl.slots.FuelSlotLensImpl;
 import org.spongepowered.common.item.inventory.lens.impl.slots.InputSlotLensImpl;
 import org.spongepowered.common.item.inventory.lens.impl.slots.OutputSlotLensImpl;
 
-public class FurnaceInventoryLens extends OrderedInventoryLensImpl {
+public class FurnaceInventoryLens extends MinecraftLens {
 
     private InputSlotLensImpl input;
     private FuelSlotLensImpl fuel;
@@ -45,12 +46,12 @@ public class FurnaceInventoryLens extends OrderedInventoryLensImpl {
     }
 
     public FurnaceInventoryLens(int base, InventoryAdapter<IInventory, ItemStack> adapter, SlotProvider<IInventory, ItemStack> slots) {
-        super(base, adapter.getInventory().getSize(), 1, adapter.getClass(), slots);
+        super(base, adapter.getInventory().getSize(), adapter.getClass(), slots);
     }
 
     @Override
     protected void init(SlotProvider<IInventory, ItemStack> slots) {
-        super.init(slots); // Set spanning SlotAdapters
+        this.addSpanningChild(new OrderedInventoryLensImpl(0, 3, 1, slots));
 
         this.input = new InputSlotLensImpl(0, (i) -> true, (i) -> true);
         this.fuel = new FuelSlotLensImpl(1, (i) -> true, (i) -> true);       // TODO SlotFurnaceFuel

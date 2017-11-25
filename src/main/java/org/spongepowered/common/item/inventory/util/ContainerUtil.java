@@ -213,12 +213,7 @@ public final class ContainerUtil {
         // Container provides Lens?
         if (container instanceof LensProvider) {
             // TODO LensProviders for all Vanilla Containers
-            InventoryAdapter<IInventory, ItemStack> adapter;
-            if (container instanceof InventoryAdapter) {
-                adapter = ((InventoryAdapter) container);
-            } else {
-                adapter = new MinecraftAdapter(MinecraftFabric.of(container), container);
-            }
+            InventoryAdapter<IInventory, ItemStack> adapter = ((InventoryAdapter) container);
             return ((LensProvider) container).getRootLens(fabric, adapter);
         }
 

@@ -38,6 +38,10 @@ import java.util.function.Predicate;
 
 public class InputSlotLensImpl extends FilteringSlotLensImpl implements InputSlotLens<IInventory, net.minecraft.item.ItemStack> {
 
+    public InputSlotLensImpl(int index) {
+        this(index, (s) -> true, (s) -> true);
+    }
+
     public InputSlotLensImpl(int index, Predicate<ItemStack> stackFilter, Predicate<ItemType> typeFilter) {
         this(index, InputSlotAdapter.class, stackFilter, typeFilter);
     }

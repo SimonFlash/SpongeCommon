@@ -28,14 +28,12 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
-import org.spongepowered.api.item.inventory.Container;
 import org.spongepowered.api.item.inventory.EmptyInventory;
 import org.spongepowered.api.item.inventory.Inventory;
 import org.spongepowered.api.item.inventory.Slot;
 import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.text.translation.Translation;
 import org.spongepowered.common.item.inventory.EmptyInventoryImpl;
-import org.spongepowered.common.item.inventory.adapter.InventoryAdapter;
 import org.spongepowered.common.item.inventory.lens.Fabric;
 import org.spongepowered.common.item.inventory.lens.Lens;
 import org.spongepowered.common.item.inventory.lens.LensProvider;
@@ -53,7 +51,7 @@ import java.util.Optional;
 
 import javax.annotation.Nullable;
 
-public abstract class ItemStackInventoryAdapter<TInventory> implements MinecraftInventoryAdapter<TInventory> {
+public abstract class AbstractInventoryAdapter<TInventory> implements MinecraftInventoryAdapter<TInventory> {
 
     public static final Translation DEFAULT_NAME = new SpongeTranslation("inventory.default.title");
 
@@ -75,11 +73,11 @@ public abstract class ItemStackInventoryAdapter<TInventory> implements Minecraft
     protected final List<Inventory> children = new ArrayList<>();
     protected Iterable<Slot> slotIterator;
 
-    public ItemStackInventoryAdapter(Fabric<TInventory> inventory) {
+    public AbstractInventoryAdapter(Fabric<TInventory> inventory) {
         this(inventory, null, null);
     }
 
-    public ItemStackInventoryAdapter(Fabric<TInventory> inventory, @Nullable Lens<TInventory, ItemStack> root, @Nullable Inventory parent) {
+    public AbstractInventoryAdapter(Fabric<TInventory> inventory, @Nullable Lens<TInventory, ItemStack> root, @Nullable Inventory parent) {
         this.inventory = inventory;
         this.parent = parent == null ? this : parent;
         this.slots = this.initSlots(inventory, parent);

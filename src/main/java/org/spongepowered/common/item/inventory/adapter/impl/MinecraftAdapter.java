@@ -24,8 +24,6 @@
  */
 package org.spongepowered.common.item.inventory.adapter.impl;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import org.spongepowered.api.item.inventory.Container;
@@ -41,7 +39,7 @@ import javax.annotation.Nullable;
 /**
  * Basic Adapter for {@link IInventory} and {@link net.minecraft.inventory.Container}
  */
-public class MinecraftAdapter extends ItemStackInventoryAdapter<IInventory> {
+public class MinecraftAdapter extends AbstractInventoryAdapter<IInventory> {
 
     /**
      * Used to calculate {@link #getPlugin()}.

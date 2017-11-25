@@ -33,8 +33,7 @@ import org.spongepowered.api.item.inventory.Slot;
 import org.spongepowered.api.item.inventory.transaction.InventoryTransactionResult;
 import org.spongepowered.common.interfaces.inventory.IMixinSlot;
 import org.spongepowered.common.item.inventory.adapter.InventoryAdapter;
-import org.spongepowered.common.item.inventory.adapter.impl.ItemStackInventoryAdapter;
-import org.spongepowered.common.item.inventory.adapter.impl.MinecraftInventoryAdapter;
+import org.spongepowered.common.item.inventory.adapter.impl.AbstractInventoryAdapter;
 import org.spongepowered.common.item.inventory.lens.Fabric;
 import org.spongepowered.common.item.inventory.lens.impl.fabric.ContainerFabric;
 import org.spongepowered.common.item.inventory.lens.impl.fabric.DelegatingFabric;
@@ -45,7 +44,7 @@ import org.spongepowered.common.item.inventory.util.ItemStackUtil;
 
 import java.util.Optional;
 
-public class SlotAdapter<TInventory> extends ItemStackInventoryAdapter<TInventory> implements Slot {
+public class SlotAdapter<TInventory> extends AbstractInventoryAdapter<TInventory> implements Slot {
 
     private final SlotLens<TInventory, net.minecraft.item.ItemStack> slot;
 
