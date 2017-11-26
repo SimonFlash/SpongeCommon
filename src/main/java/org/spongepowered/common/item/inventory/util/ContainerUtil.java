@@ -84,7 +84,6 @@ import org.spongepowered.common.item.inventory.lens.impl.MinecraftFabric;
 import org.spongepowered.common.item.inventory.lens.impl.collections.SlotCollection;
 import org.spongepowered.common.item.inventory.lens.impl.comp.CraftingInventoryLensImpl;
 import org.spongepowered.common.item.inventory.lens.impl.comp.GridInventoryLensImpl;
-import org.spongepowered.common.item.inventory.lens.impl.comp.HotbarLensImpl;
 import org.spongepowered.common.item.inventory.lens.impl.comp.Inventory2DLensImpl;
 import org.spongepowered.common.item.inventory.lens.impl.comp.MainPlayerInventoryLensImpl;
 import org.spongepowered.common.item.inventory.lens.impl.comp.OrderedInventoryLensImpl;
@@ -275,7 +274,7 @@ public final class ContainerUtil {
                     lens = new SlotLensImpl(index);
                 } else if ((lens instanceof PlayerInventoryLens || playerLens) && slotCount == 36) { // Player
                     // Player Inventory + Hotbar
-                    lenses.add(new MainPlayerInventoryLensImpl(index, 9, 4, 9, slots));
+                    lenses.add(new MainPlayerInventoryLensImpl(index, slots));
                     //lenses.add(new GridInventoryLensImpl(index, 9, 3, 9, slots));
                     //lenses.add(new HotbarLensImpl(index + 27, 9, slots));
                     lens = null;
@@ -317,10 +316,9 @@ public final class ContainerUtil {
             return new BrewingStandInventoryLens(base, adapter, slots);
         }
         if (lens instanceof CraftingInventoryLens) {
-            return new CraftingInventoryLensImpl(base,
+            return new CraftingInventoryLensImpl(0, base,
                     ((GridInventoryLens<?,?>) lens).getWidth(),
                     ((GridInventoryLens<?,?>) lens).getHeight(),
-                    ((GridInventoryLens<?,?>) lens).getStride(),
                     slots);
         }
         if (lens instanceof GridInventoryLens) {
@@ -353,6 +351,13 @@ public final class ContainerUtil {
                     .add(36)
                     .add(1);
             builder.add(container.inventorySlots.size() - 46); // Add additional slots (e.g. from mods)
+            return builder.build();
+        }
+        if (container instanceof ContainerWorkbench) {
+            SlotCollection.Builder builder = new SlotCollection.Builder()
+                    .add(1, CraftingOutputAdapter.class, (i) -> new CraftingOutputSlotLensImpl(i, (t) -> false, (t) -> false))
+                    .add(9)
+                    .add(36);
             return builder.build();
         }
         return new SlotCollection.Builder().add(((MinecraftInventoryAdapter) container).getInventory().getSize()).build();

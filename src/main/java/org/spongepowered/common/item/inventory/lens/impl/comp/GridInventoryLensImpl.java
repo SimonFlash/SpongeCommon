@@ -71,8 +71,11 @@ public class GridInventoryLensImpl extends Inventory2DLensImpl implements GridIn
 
     @Override
     protected void init(SlotProvider<IInventory, ItemStack> slots) {
-        super.init(slots, false);
+    }
 
+    @Override
+    protected void init(SlotProvider<IInventory, ItemStack> slots, boolean spanning) {
+        super.init(slots, false);
         this.rows = new ArrayList<>();
         this.cols = new ArrayList<>();
 
@@ -87,9 +90,6 @@ public class GridInventoryLensImpl extends Inventory2DLensImpl implements GridIn
         }
 
         this.cache();
-
-        // Add direct child slots
-//        super.init(slots, false);
     }
 
     protected void addRow(InventoryRowLens<IInventory, ItemStack> row) {

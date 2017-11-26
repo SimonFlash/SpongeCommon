@@ -29,6 +29,7 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryBasic;
+import net.minecraft.inventory.InventoryCraftResult;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.inventory.InventoryLargeChest;
 import net.minecraft.tileentity.TileEntityLockable;
@@ -70,7 +71,8 @@ import java.util.Optional;
         CustomInventory.class,
         InventoryBasic.class,
         SpongeUserInventory.class,
-        InventoryCrafting.class
+        InventoryCrafting.class,
+        InventoryCraftResult.class
 }, priority = 999)
 @Implements(@Interface(iface = Inventory.class, prefix = "inventory$"))
 public abstract class MixinInventory implements MinecraftInventoryAdapter<IInventory> {

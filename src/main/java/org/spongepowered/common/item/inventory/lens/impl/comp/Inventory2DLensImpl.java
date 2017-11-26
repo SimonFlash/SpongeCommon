@@ -76,7 +76,6 @@ public class Inventory2DLensImpl extends OrderedInventoryLensImpl implements Inv
 
     @Override
     protected void init(SlotProvider<IInventory, ItemStack> slots) {
-
         //this.init(slots, true);
     }
 

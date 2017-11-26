@@ -347,6 +347,7 @@
         "item.inventory.MixinContainerCrafting",
         "item.inventory.MixinContainerHorseChest",
         "item.inventory.MixinContainerPlayer",
+        "item.inventory.MixinContainerWorkbench",
         "item.inventory.MixinCustomInventory",
         "item.inventory.MixinCustomContainer",
         "item.inventory.MixinSlot",

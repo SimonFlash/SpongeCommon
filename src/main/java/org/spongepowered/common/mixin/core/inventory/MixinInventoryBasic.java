@@ -26,6 +26,7 @@ package org.spongepowered.common.mixin.core.inventory;
 
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryBasic;
+import net.minecraft.inventory.InventoryCraftResult;
 import net.minecraft.item.ItemStack;
 import org.spongepowered.asm.mixin.Implements;
 import org.spongepowered.asm.mixin.Interface;
@@ -43,7 +44,7 @@ import org.spongepowered.common.item.inventory.lens.impl.collections.SlotCollect
 import org.spongepowered.common.item.inventory.lens.impl.comp.OrderedInventoryLensImpl;
 import org.spongepowered.common.item.inventory.lens.impl.fabric.IInventoryFabric;
 
-@Mixin(InventoryBasic.class)
+@Mixin(value = {InventoryBasic.class, InventoryCraftResult.class})
 @Implements(value = @Interface(iface = MinecraftInventoryAdapter.class, prefix = "inventory$"))
 public abstract class MixinInventoryBasic implements IInventory, LensProvider<IInventory, ItemStack> {
 

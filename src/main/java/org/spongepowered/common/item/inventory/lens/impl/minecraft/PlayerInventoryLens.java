@@ -74,7 +74,7 @@ public class PlayerInventoryLens extends RealLens {
 
         int base = 0;
         int INVENTORY_WIDTH = InventoryPlayer.getHotbarSize();
-        this.main = new MainPlayerInventoryLensImpl(base, INVENTORY_WIDTH, MAIN_INVENTORY_HEIGHT + HOTBAR, INVENTORY_WIDTH, slots);
+        this.main = new MainPlayerInventoryLensImpl(base, slots);
         base += INVENTORY_WIDTH * HOTBAR;
         base += INVENTORY_WIDTH * MAIN_INVENTORY_HEIGHT;
         this.equipment = new EquipmentInventoryLensImpl(this.player, base, EQUIPMENT, 1, slots);
@@ -87,7 +87,7 @@ public class PlayerInventoryLens extends RealLens {
         this.addSpanningChild(this.offhand);
 
         // Additional Slots for bigger modded inventories
-        int additionalSlots = this.size - base;
+        int additionalSlots = this.size - base - 1;
         if (additionalSlots > 0) {
             this.addSpanningChild(new OrderedInventoryLensImpl(base, additionalSlots, 1, slots));
         }

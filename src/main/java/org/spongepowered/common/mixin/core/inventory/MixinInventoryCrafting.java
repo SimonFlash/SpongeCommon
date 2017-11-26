@@ -42,6 +42,7 @@ import org.spongepowered.common.item.inventory.lens.Lens;
 import org.spongepowered.common.item.inventory.lens.LensProvider;
 import org.spongepowered.common.item.inventory.lens.SlotProvider;
 import org.spongepowered.common.item.inventory.lens.impl.collections.SlotCollection;
+import org.spongepowered.common.item.inventory.lens.impl.comp.CraftingGridInventoryLensImpl;
 import org.spongepowered.common.item.inventory.lens.impl.comp.OrderedInventoryLensImpl;
 import org.spongepowered.common.item.inventory.lens.impl.fabric.IInventoryFabric;
 
@@ -50,6 +51,11 @@ import org.spongepowered.common.item.inventory.lens.impl.fabric.IInventoryFabric
 public abstract class MixinInventoryCrafting implements IInventory, LensProvider<IInventory, ItemStack> {
 
     @Shadow private NonNullList<ItemStack> stackList;
+
+    @Shadow public abstract int getWidth();
+
+    @Shadow public abstract int getHeight();
+
     protected Fabric<IInventory> fabric;
     protected SlotCollection slots;
     protected Lens<IInventory, ItemStack> lens;
@@ -66,7 +72,7 @@ public abstract class MixinInventoryCrafting implements IInventory, LensProvider
         if (this.stackList.size() == 0) {
             return null; // No Lens when inventory has no slots
         }
-        return new OrderedInventoryLensImpl(0, this.stackList.size(), 1, this.slots);
+        return new CraftingGridInventoryLensImpl(0, this.getWidth(), this.getHeight(), this.getWidth(), this.slots);
     }
 
     public SlotProvider<IInventory, ItemStack> inventory$getSlotProvider() {
