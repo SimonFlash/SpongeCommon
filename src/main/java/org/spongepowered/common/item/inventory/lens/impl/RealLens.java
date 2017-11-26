@@ -24,38 +24,18 @@
  */
 package org.spongepowered.common.item.inventory.lens.impl;
 
-import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import org.spongepowered.api.item.inventory.Inventory;
-import org.spongepowered.common.item.inventory.adapter.InvalidAdapterException;
 import org.spongepowered.common.item.inventory.adapter.InventoryAdapter;
 import org.spongepowered.common.item.inventory.adapter.impl.MinecraftAdapter;
 import org.spongepowered.common.item.inventory.lens.Fabric;
-import org.spongepowered.common.item.inventory.lens.Lens;
 import org.spongepowered.common.item.inventory.lens.SlotProvider;
-import org.spongepowered.common.item.inventory.lens.impl.collections.SlotCollection;
-import org.spongepowered.common.item.inventory.lens.impl.fabric.ContainerFabric;
-
-import java.lang.reflect.Constructor;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.function.Function;
-import java.util.function.Supplier;
 
 @SuppressWarnings("rawtypes")
 public abstract class RealLens extends AbstractLens<IInventory, ItemStack> {
 
-    // InventoryAdapterClass -> LensClass -> Size -> ReusableLens
-    private static Map<Class<? extends InventoryAdapter>, Map<Class<? extends Lens<IInventory, ItemStack>>, Int2ObjectMap<ReusableLens>>> reusableLenses = new HashMap<>();
 
-    @SuppressWarnings("unchecked")
-    public static <T extends Lens<IInventory, ItemStack>> ReusableLens<T> getLens(Class<T> lensType, InventoryAdapter<IInventory, ItemStack> adapter, Function<SlotCollection, T> lens, Supplier<SlotCollection> slots) {
-        Map<Class<? extends Lens<IInventory, ItemStack>>, Int2ObjectMap<ReusableLens>> adapterLenses = reusableLenses.computeIfAbsent(adapter.getClass(), k -> new HashMap<>());
-        Int2ObjectMap<ReusableLens> lenses = adapterLenses.computeIfAbsent(lensType, k -> new Int2ObjectOpenHashMap<>());
-        return lenses.computeIfAbsent(adapter.getInventory().getSize(), k -> new ReusableLens(slots.get(), lens, adapter.getClass()));
-    }
 
     public RealLens(int base, int size, Class<? extends Inventory> adapterType, SlotProvider<IInventory, ItemStack> slots) {
         super(base, size, adapterType, slots);

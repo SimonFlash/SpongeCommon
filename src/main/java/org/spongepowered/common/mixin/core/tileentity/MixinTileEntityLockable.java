@@ -51,6 +51,7 @@ import org.spongepowered.common.item.inventory.adapter.impl.MinecraftInventoryAd
 import org.spongepowered.common.item.inventory.lens.Fabric;
 import org.spongepowered.common.item.inventory.lens.Lens;
 import org.spongepowered.common.item.inventory.lens.SlotProvider;
+import org.spongepowered.common.item.inventory.lens.impl.ReusableLens;
 import org.spongepowered.common.item.inventory.lens.impl.collections.SlotCollection;
 import org.spongepowered.common.item.inventory.lens.impl.comp.OrderedInventoryLensImpl;
 import org.spongepowered.common.item.inventory.lens.impl.fabric.IInventoryFabric;
@@ -69,8 +70,11 @@ public abstract class MixinTileEntityLockable extends MixinTileEntity implements
     @Shadow private LockCode code;
 
     protected Fabric<IInventory> fabric; // is set when constructed
+
     protected SlotCollection slots; // is set by Mixin further down the line OR fallback in getter
     @Nullable protected Lens<IInventory, ItemStack> lens = null; // is set by Mixin further down the line OR fallback in getter
+
+    @Nullable protected ReusableLens<?> reusableLens = null;
 
     @Inject(method = "<init>", at = @At("RETURN"))
     private void onConstructed(CallbackInfo ci) {
@@ -130,17 +134,29 @@ public abstract class MixinTileEntityLockable extends MixinTileEntity implements
     }
 
     public SlotProvider<IInventory, ItemStack> inventory$getSlotProvider() {
-        if (this.slots == null) {
-            this.slots = new SlotCollection.Builder().add(this.getSizeInventory()).build(); // Fallback
+        if (this.slots != null) {
+            return this.slots;
         }
-        return this.slots;
+        if (this.reusableLens == null) {
+            this.reusableLens = this.generateLens();
+        }
+        return this.reusableLens.getSlots();
     }
 
     public Lens<IInventory, ItemStack> inventory$getRootLens() {
-        if (this.lens == null) {
-            this.lens = new OrderedInventoryLensImpl(0, this.getSizeInventory(), 1, inventory$getSlotProvider());
+        if (this.lens != null) {
+            return this.lens;
         }
-        return this.lens;
+        if (this.reusableLens == null) {
+            this.reusableLens = generateLens();
+        }
+        return this.reusableLens.getLens();
+    }
+
+    public ReusableLens<?> generateLens() {
+        SlotCollection slots = new SlotCollection.Builder().add(this.getSizeInventory()).build();
+        OrderedInventoryLensImpl lens = new OrderedInventoryLensImpl(0, this.getSizeInventory(), 1, inventory$getSlotProvider());
+        return new ReusableLens<>(slots, lens);
     }
 
     public Fabric<IInventory> inventory$getInventory() {
