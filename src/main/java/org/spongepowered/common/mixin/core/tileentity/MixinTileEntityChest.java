@@ -35,6 +35,7 @@ import org.spongepowered.api.block.tileentity.carrier.Chest;
 import org.spongepowered.api.data.manipulator.DataManipulator;
 import org.spongepowered.api.data.manipulator.mutable.block.ConnectedDirectionData;
 import org.spongepowered.api.item.inventory.Inventory;
+import org.spongepowered.api.item.inventory.type.GridInventory;
 import org.spongepowered.api.util.annotation.NonnullByDefault;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -43,6 +44,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.common.item.inventory.adapter.InventoryAdapter;
 import org.spongepowered.common.item.inventory.lens.Lens;
+import org.spongepowered.common.item.inventory.lens.SlotProvider;
 import org.spongepowered.common.item.inventory.lens.comp.GridInventoryLens;
 import org.spongepowered.common.item.inventory.lens.impl.DelegatingLens;
 import org.spongepowered.common.item.inventory.lens.impl.RealLens;
@@ -69,12 +71,21 @@ public abstract class MixinTileEntityChest extends MixinTileEntityLockableLoot i
 
     @Shadow public abstract void checkForAdjacentChests();
 
-    @SuppressWarnings({"unchecked", "rawtypes"})
-    @Inject(method = "<init>", at = @At("RETURN"))
-    public void onConstructed(CallbackInfo ci) {
+    @SuppressWarnings("unchecked")
+    @Override
+    public ReusableLens<?> generateLens() {
+        return ReusableLens.getLens(GridInventoryLens.class, ((InventoryAdapter) this), this::generateSlotProvider, this::generateRootLens);
+    }
+
+    @SuppressWarnings("unchecked")
+    private SlotProvider<IInventory, ItemStack> generateSlotProvider() {
+        return new SlotCollection.Builder().add(27).build();
+    }
+
+    @SuppressWarnings("unchecked")
+    private GridInventoryLens<IInventory, ItemStack> generateRootLens(SlotProvider<IInventory, ItemStack> slots) {
         Class<? extends InventoryAdapter> thisClass = ((Class) this.getClass());
-        this.slots = new SlotCollection.Builder().add(27).build();
-        this.lens = new GridInventoryLensImpl(0, 9, 3, 9, thisClass, this.slots);
+        return new GridInventoryLensImpl(0, 9, 3, 9, thisClass, slots);
     }
 
     /**

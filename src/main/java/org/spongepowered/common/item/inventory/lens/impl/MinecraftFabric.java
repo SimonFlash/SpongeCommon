@@ -30,6 +30,9 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryLargeChest;
 import net.minecraft.inventory.Slot;
+import net.minecraft.item.ItemStack;
+import org.spongepowered.api.item.inventory.Inventory;
+import org.spongepowered.common.item.inventory.adapter.InventoryAdapter;
 import org.spongepowered.common.item.inventory.lens.Fabric;
 import org.spongepowered.common.item.inventory.lens.UnsupportedFabricException;
 import org.spongepowered.common.item.inventory.lens.impl.fabric.CompoundFabric;
@@ -59,5 +62,18 @@ public abstract class MinecraftFabric implements Fabric<IInventory> {
         }
         throw new UnsupportedFabricException("Container of type %s could not be used as an inventory fabric", target.getClass());
     }
-    
+
+    public static InventoryAdapter<IInventory, ItemStack> getAdapter(Fabric<IInventory> fabric, Inventory parent, int base, Class<? extends Inventory> adapterType) {
+        IInventory inventory = fabric.get(base);
+        if (inventory.getClass() == adapterType) {
+            return ((InventoryAdapter) inventory);
+        }
+        if (fabric instanceof ContainerFabric) {
+            inventory = of(inventory).get(base);
+            if (inventory.getClass() == adapterType) {
+                return ((InventoryAdapter) inventory);
+            }
+        }
+        return null;
+    }
 }

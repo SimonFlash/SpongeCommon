@@ -24,9 +24,12 @@
  */
 package org.spongepowered.common.mixin.core.tileentity;
 
+import static net.minecraft.inventory.SlotFurnaceFuel.isBucket;
+
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntityBrewingStand;
+import net.minecraft.tileentity.TileEntityFurnace;
 import org.spongepowered.api.block.tileentity.carrier.BrewingStand;
 import org.spongepowered.api.data.DataView;
 import org.spongepowered.api.util.annotation.NonnullByDefault;
@@ -42,12 +45,18 @@ import org.spongepowered.common.interfaces.data.IMixinCustomNameable;
 import org.spongepowered.common.item.inventory.adapter.InventoryAdapter;
 import org.spongepowered.common.item.inventory.adapter.impl.MinecraftInventoryAdapter;
 import org.spongepowered.common.item.inventory.adapter.impl.slots.FilteringSlotAdapter;
+import org.spongepowered.common.item.inventory.adapter.impl.slots.FuelSlotAdapter;
 import org.spongepowered.common.item.inventory.adapter.impl.slots.InputSlotAdapter;
+import org.spongepowered.common.item.inventory.adapter.impl.slots.OutputSlotAdapter;
+import org.spongepowered.common.item.inventory.lens.SlotProvider;
 import org.spongepowered.common.item.inventory.lens.impl.ReusableLens;
 import org.spongepowered.common.item.inventory.lens.impl.collections.SlotCollection;
 import org.spongepowered.common.item.inventory.lens.impl.minecraft.BrewingStandInventoryLens;
+import org.spongepowered.common.item.inventory.lens.impl.minecraft.FurnaceInventoryLens;
 import org.spongepowered.common.item.inventory.lens.impl.slots.FilteringSlotLensImpl;
+import org.spongepowered.common.item.inventory.lens.impl.slots.FuelSlotLensImpl;
 import org.spongepowered.common.item.inventory.lens.impl.slots.InputSlotLensImpl;
+import org.spongepowered.common.item.inventory.lens.impl.slots.OutputSlotLensImpl;
 
 @NonnullByDefault
 @Mixin(TileEntityBrewingStand.class)
@@ -57,9 +66,14 @@ public abstract class MixinTileEntityBrewingStand extends MixinTileEntityLockabl
     @Shadow private String customName;
 
     @SuppressWarnings("unchecked")
-    @Inject(method = "<init>", at = @At("RETURN"))
-    public void onConstructed(CallbackInfo ci) {
-        this.slots = new SlotCollection.Builder().add(5)
+    @Override
+    public ReusableLens<?> generateLens() {
+        return ReusableLens.getLens(BrewingStandInventoryLens.class, ((InventoryAdapter) this), this::generateSlotProvider, this::generateRootLens);
+    }
+
+    @SuppressWarnings("unchecked")
+    private SlotProvider<IInventory, ItemStack> generateSlotProvider() {
+        return new SlotCollection.Builder().add(5)
                 .add(InputSlotAdapter.class, (i) -> new InputSlotLensImpl(i, (s) -> this.isItemValidForSlot(i, (ItemStack) s), t
                         -> this.isItemValidForSlot(i, (ItemStack) org.spongepowered.api.item.inventory.ItemStack.of(t, 1))))
                 .add(InputSlotAdapter.class, (i) -> new InputSlotLensImpl(i, (s) -> this.isItemValidForSlot(i, (ItemStack) s), t
@@ -71,7 +85,11 @@ public abstract class MixinTileEntityBrewingStand extends MixinTileEntityLockabl
                 .add(FilteringSlotAdapter.class, (i) -> new FilteringSlotLensImpl(i, (s) -> this.isItemValidForSlot(i, (ItemStack) s), t
                         -> this.isItemValidForSlot(i, (ItemStack) org.spongepowered.api.item.inventory.ItemStack.of(t, 1))))
                 .build();
-        this.lens = new BrewingStandInventoryLens((InventoryAdapter<IInventory, ItemStack>) this, this.slots);
+    }
+
+    @SuppressWarnings("unchecked")
+    private BrewingStandInventoryLens generateRootLens(SlotProvider<IInventory, ItemStack> slots) {
+        return new BrewingStandInventoryLens((InventoryAdapter<IInventory, ItemStack>) this, slots);
     }
 
     @Override

@@ -26,6 +26,7 @@ package org.spongepowered.common.item.inventory.lens.impl.comp;
 
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
+import org.apache.commons.lang3.ObjectUtils;
 import org.spongepowered.api.item.inventory.Inventory;
 import org.spongepowered.common.item.inventory.adapter.InventoryAdapter;
 import org.spongepowered.common.item.inventory.adapter.impl.comp.GridInventoryAdapter;
@@ -35,7 +36,6 @@ import org.spongepowered.common.item.inventory.lens.comp.GridInventoryLens;
 import org.spongepowered.common.item.inventory.lens.comp.InventoryColumnLens;
 import org.spongepowered.common.item.inventory.lens.comp.InventoryRowLens;
 import org.spongepowered.common.item.inventory.lens.impl.MinecraftFabric;
-import org.spongepowered.common.item.inventory.lens.impl.fabric.ContainerFabric;
 import org.spongepowered.common.item.inventory.lens.impl.struct.LensHandle;
 
 import java.util.ArrayList;
@@ -122,17 +122,7 @@ public class GridInventoryLensImpl extends Inventory2DLensImpl implements GridIn
 
     @Override
     public InventoryAdapter<IInventory, ItemStack> getAdapter(Fabric<IInventory> fabric, Inventory parent) {
-        IInventory inventory = fabric.get(this.base);
-        if (inventory.getClass() == this.adapterType) {
-            return ((InventoryAdapter) inventory);
-        }
-        if (fabric instanceof ContainerFabric) {
-            inventory = MinecraftFabric.of(inventory).get(this.base);
-            if (inventory.getClass() == this.adapterType) {
-                return ((InventoryAdapter) inventory);
-            }
-        }
-        return new GridInventoryAdapter(fabric, this, parent);
+        return ObjectUtils.firstNonNull(MinecraftFabric.getAdapter(fabric, parent, this.base, this.adapterType), new GridInventoryAdapter(fabric, this, parent));
     }
 
 }

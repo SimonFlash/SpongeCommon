@@ -71,9 +71,6 @@ public abstract class MixinTileEntityLockable extends MixinTileEntity implements
 
     protected Fabric<IInventory> fabric; // is set when constructed
 
-    protected SlotCollection slots; // is set by Mixin further down the line OR fallback in getter
-    @Nullable protected Lens<IInventory, ItemStack> lens = null; // is set by Mixin further down the line OR fallback in getter
-
     @Nullable protected ReusableLens<?> reusableLens = null;
 
     @Inject(method = "<init>", at = @At("RETURN"))
@@ -134,9 +131,6 @@ public abstract class MixinTileEntityLockable extends MixinTileEntity implements
     }
 
     public SlotProvider<IInventory, ItemStack> inventory$getSlotProvider() {
-        if (this.slots != null) {
-            return this.slots;
-        }
         if (this.reusableLens == null) {
             this.reusableLens = this.generateLens();
         }
@@ -144,9 +138,6 @@ public abstract class MixinTileEntityLockable extends MixinTileEntity implements
     }
 
     public Lens<IInventory, ItemStack> inventory$getRootLens() {
-        if (this.lens != null) {
-            return this.lens;
-        }
         if (this.reusableLens == null) {
             this.reusableLens = generateLens();
         }

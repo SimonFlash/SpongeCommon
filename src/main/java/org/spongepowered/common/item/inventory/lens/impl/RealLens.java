@@ -35,8 +35,6 @@ import org.spongepowered.common.item.inventory.lens.SlotProvider;
 @SuppressWarnings("rawtypes")
 public abstract class RealLens extends AbstractLens<IInventory, ItemStack> {
 
-
-
     public RealLens(int base, int size, Class<? extends Inventory> adapterType, SlotProvider<IInventory, ItemStack> slots) {
         super(base, size, adapterType, slots);
     }
@@ -44,7 +42,6 @@ public abstract class RealLens extends AbstractLens<IInventory, ItemStack> {
     public RealLens(int base, int size, InventoryAdapter<IInventory, ItemStack> adapter, SlotProvider<IInventory, ItemStack> slots) {
         super(base, size, adapter, slots);
     }
-
 
     @SuppressWarnings("unchecked")
     @Override
@@ -55,25 +52,4 @@ public abstract class RealLens extends AbstractLens<IInventory, ItemStack> {
         }
         return ((InventoryAdapter) base);
     }
-
-    /*
-    protected InventoryAdapter<TInventory, TStack> createAdapter(Fabric<TInventory> inv, Inventory parent) {
-        try {
-            Constructor<InventoryAdapter<TInventory, TStack>> ctor = this.getAdapterCtor();
-            return ctor.newInstance(inv, this, parent);
-        } catch (Exception ex) {
-            throw new InvalidAdapterException("Adapter class for " + this.getClass().getSimpleName() + " does not have a constructor which accepts this lens", ex);
-        }
-    }
-
-    @SuppressWarnings("unchecked")
-    protected Constructor<InventoryAdapter<TInventory, TStack>> getAdapterCtor() throws NoSuchMethodException {
-        try {
-            return (Constructor<InventoryAdapter<TInventory, TStack>>) this.adapterType.getConstructor(Fabric.class, this.getClass(), Inventory.class);
-        } catch (Exception ex1) {
-            return (Constructor<InventoryAdapter<TInventory, TStack>>) this.adapterType.getConstructor(Fabric.class, Lens.class, Inventory.class);
-        }
-    }
-    */
-
 }

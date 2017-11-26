@@ -80,7 +80,7 @@ public abstract class MixinTileEntityHopper extends MixinTileEntityLockableLoot 
         throw new AbstractMethodError("Shadow");
     }
 
-    @Shadow protected static boolean isInventoryEmpty(IInventory inventoryIn, EnumFacing side) {
+    @Shadow private static boolean isInventoryEmpty(IInventory inventoryIn, EnumFacing side) {
         throw new AbstractMethodError("Shadow");
     }
 
@@ -93,18 +93,21 @@ public abstract class MixinTileEntityHopper extends MixinTileEntityLockableLoot 
         return this.capturedTransactions;
     }
 
-    public SlotProvider<IInventory, ItemStack> generateSlotProvider() {
-        return new SlotCollection.Builder().add(5).build();
-    }
-
-    public GridInventoryLens<IInventory, ItemStack> generateRootLens(SlotProvider<IInventory, ItemStack> slots) {
-        Class<? extends InventoryAdapter> thisClass = ((Class) this.getClass());
-        return new GridInventoryLensImpl(0, 5, 1, 5, thisClass, slots);
-    }
-
+    @SuppressWarnings("unchecked")
     @Override
     public ReusableLens<?> generateLens() {
         return ReusableLens.getLens(GridInventoryLens.class, ((InventoryAdapter) this), this::generateSlotProvider, this::generateRootLens);
+    }
+
+    @SuppressWarnings("unchecked")
+    private SlotProvider<IInventory, ItemStack> generateSlotProvider() {
+        return new SlotCollection.Builder().add(5).build();
+    }
+
+    @SuppressWarnings("unchecked")
+    private GridInventoryLens<IInventory, ItemStack> generateRootLens(SlotProvider<IInventory, ItemStack> slots) {
+        Class<? extends InventoryAdapter> thisClass = ((Class) this.getClass());
+        return new GridInventoryLensImpl(0, 5, 1, 5, thisClass, slots);
     }
 
     @Inject(method = "putDropInInventoryAllSlots", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/item/EntityItem;getItem()Lnet/minecraft/item/ItemStack;"))

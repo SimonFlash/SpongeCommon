@@ -26,6 +26,7 @@ package org.spongepowered.common.mixin.core.tileentity;
 
 import static org.spongepowered.api.data.DataQuery.of;
 
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
 import net.minecraft.tileentity.TileEntityBeacon;
@@ -43,9 +44,15 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.common.interfaces.IMixinTileEntityBeacon;
 import org.spongepowered.common.interfaces.data.IMixinCustomNameable;
+import org.spongepowered.common.item.inventory.adapter.InventoryAdapter;
 import org.spongepowered.common.item.inventory.adapter.impl.slots.InputSlotAdapter;
+import org.spongepowered.common.item.inventory.lens.SlotProvider;
+import org.spongepowered.common.item.inventory.lens.comp.GridInventoryLens;
+import org.spongepowered.common.item.inventory.lens.impl.ReusableLens;
 import org.spongepowered.common.item.inventory.lens.impl.collections.SlotCollection;
+import org.spongepowered.common.item.inventory.lens.impl.comp.GridInventoryLensImpl;
 import org.spongepowered.common.item.inventory.lens.impl.slots.InputSlotLensImpl;
+import org.spongepowered.common.item.inventory.lens.slots.InputSlotLens;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -60,15 +67,24 @@ public abstract class MixinTileEntityBeacon extends MixinTileEntityLockable impl
     @Shadow private String customName;
     @Override @Shadow public abstract boolean isItemValidForSlot(int index, ItemStack stack);
 
-    @Inject(method = "<init>", at = @At("RETURN"))
-    public void onConstructed(CallbackInfo ci) {
-        InputSlotLensImpl lens = new InputSlotLensImpl(0, itemStack -> isItemValidForSlot(0, (ItemStack) itemStack),
-                itemType -> isItemValidForSlot(0, (ItemStack) org.spongepowered.api.item.inventory.ItemStack.of(itemType, 1)));
+    @SuppressWarnings("unchecked")
+    @Override
+    public ReusableLens<?> generateLens() {
+        return ReusableLens.getLens(InputSlotLens.class, ((InventoryAdapter) this), this::generateSlotProvider, this::generateRootLens);
+    }
 
-        this.slots = new SlotCollection.Builder()
+    @SuppressWarnings("unchecked")
+    private SlotProvider<IInventory, ItemStack> generateSlotProvider() {
+        InputSlotLensImpl lens = new InputSlotLensImpl(0, ((Class) TileEntityBeacon.class), itemStack -> isItemValidForSlot(0, (ItemStack) itemStack),
+                itemType -> isItemValidForSlot(0, (ItemStack) org.spongepowered.api.item.inventory.ItemStack.of(itemType, 1)));
+        return new SlotCollection.Builder()
                 .add(InputSlotAdapter.class, i -> lens)
                 .build();
-        this.lens = lens;
+    }
+
+    @SuppressWarnings("unchecked")
+    private InputSlotLens<IInventory, ItemStack> generateRootLens(SlotProvider<IInventory, ItemStack> slots) {
+        return ((InputSlotLens) slots.getSlot(0));
     }
 
     @Override

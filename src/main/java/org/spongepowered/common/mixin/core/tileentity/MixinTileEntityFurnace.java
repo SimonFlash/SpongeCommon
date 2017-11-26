@@ -43,6 +43,8 @@ import org.spongepowered.common.item.inventory.adapter.InventoryAdapter;
 import org.spongepowered.common.item.inventory.adapter.impl.slots.FuelSlotAdapter;
 import org.spongepowered.common.item.inventory.adapter.impl.slots.InputSlotAdapter;
 import org.spongepowered.common.item.inventory.adapter.impl.slots.OutputSlotAdapter;
+import org.spongepowered.common.item.inventory.lens.SlotProvider;
+import org.spongepowered.common.item.inventory.lens.impl.ReusableLens;
 import org.spongepowered.common.item.inventory.lens.impl.collections.SlotCollection;
 import org.spongepowered.common.item.inventory.lens.impl.minecraft.FurnaceInventoryLens;
 import org.spongepowered.common.item.inventory.lens.impl.slots.FuelSlotLensImpl;
@@ -56,17 +58,26 @@ public abstract class MixinTileEntityFurnace extends MixinTileEntityLockable imp
     @Shadow private String furnaceCustomName;
 
     @SuppressWarnings("unchecked")
-    @Inject(method = "<init>", at = @At("RETURN"))
-    public void onConstructed(CallbackInfo ci) {
-        this.slots = new SlotCollection.Builder().add(InputSlotAdapter.class, InputSlotLensImpl::new)
+    @Override
+    public ReusableLens<?> generateLens() {
+        return ReusableLens.getLens(FurnaceInventoryLens.class, ((InventoryAdapter) this), this::generateSlotProvider, this::generateRootLens);
+    }
+
+    @SuppressWarnings("unchecked")
+    private SlotProvider<IInventory, ItemStack> generateSlotProvider() {
+        return new SlotCollection.Builder().add(InputSlotAdapter.class, InputSlotLensImpl::new)
                 .add(FuelSlotAdapter.class, (i) -> new FuelSlotLensImpl(i, (s) -> TileEntityFurnace.isItemFuel((ItemStack) s) || isBucket(
                         (ItemStack) s), t -> {
-                            final ItemStack nmsStack = (ItemStack) org.spongepowered.api.item.inventory.ItemStack.of(t, 1);
+                    final ItemStack nmsStack = (ItemStack) org.spongepowered.api.item.inventory.ItemStack.of(t, 1);
                     return TileEntityFurnace.isItemFuel(nmsStack) || isBucket(nmsStack);
                 }))
                 .add(OutputSlotAdapter.class, (i) -> new OutputSlotLensImpl(i, (s) -> false, (t) -> false))
                 .build();
-        this.lens = new FurnaceInventoryLens((InventoryAdapter<IInventory, ItemStack>) this, this.slots);
+    }
+
+    @SuppressWarnings("unchecked")
+    private FurnaceInventoryLens generateRootLens(SlotProvider<IInventory, ItemStack> slots) {
+        return new FurnaceInventoryLens((InventoryAdapter<IInventory, ItemStack>) this, slots);
     }
 
     @Override
