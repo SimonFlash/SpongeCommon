@@ -28,9 +28,11 @@ import static com.google.common.base.Preconditions.*;
 
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.InventoryLargeChest;
 import net.minecraft.inventory.Slot;
 import org.spongepowered.common.item.inventory.lens.Fabric;
 import org.spongepowered.common.item.inventory.lens.UnsupportedFabricException;
+import org.spongepowered.common.item.inventory.lens.impl.fabric.CompoundFabric;
 import org.spongepowered.common.item.inventory.lens.impl.fabric.ContainerFabric;
 import org.spongepowered.common.item.inventory.lens.impl.fabric.IInventoryFabric;
 import org.spongepowered.common.item.inventory.lens.impl.fabric.SlotFabric;
@@ -50,6 +52,8 @@ public abstract class MinecraftFabric implements Fabric<IInventory> {
             return new IInventoryFabric(slot.inventory);
         } else if (target instanceof Container) {
             return new ContainerFabric((Container) target);
+        } else if (target instanceof InventoryLargeChest) {
+            return new CompoundFabric(new IInventoryFabric(((InventoryLargeChest) target).upperChest), new IInventoryFabric(((InventoryLargeChest) target).lowerChest));
         } else if (target instanceof IInventory) {
             return new IInventoryFabric((IInventory) target);
         }

@@ -44,6 +44,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.common.item.inventory.adapter.InventoryAdapter;
 import org.spongepowered.common.item.inventory.lens.Lens;
 import org.spongepowered.common.item.inventory.lens.comp.GridInventoryLens;
+import org.spongepowered.common.item.inventory.lens.impl.DelegatingLens;
 import org.spongepowered.common.item.inventory.lens.impl.RealLens;
 import org.spongepowered.common.item.inventory.lens.impl.ReusableLens;
 import org.spongepowered.common.item.inventory.lens.impl.collections.SlotCollection;
@@ -71,12 +72,9 @@ public abstract class MixinTileEntityChest extends MixinTileEntityLockableLoot i
     @SuppressWarnings({"unchecked", "rawtypes"})
     @Inject(method = "<init>", at = @At("RETURN"))
     public void onConstructed(CallbackInfo ci) {
-        ReusableLens<? extends Lens<IInventory, ItemStack>> reusableLens = RealLens.getLens(GridInventoryLens.class,
-                ((InventoryAdapter) this),
-                s -> new GridInventoryLensImpl(0, 9, 3, 9, s),
-                () -> new SlotCollection.Builder().add(27).build());
-        this.slots = reusableLens.getSlots();
-        this.lens = reusableLens.getLens();
+        Class<? extends InventoryAdapter> thisClass = ((Class) this.getClass());
+        this.slots = new SlotCollection.Builder().add(27).build();
+        this.lens = new GridInventoryLensImpl(0, 9, 3, 9, thisClass, this.slots);
     }
 
     /**

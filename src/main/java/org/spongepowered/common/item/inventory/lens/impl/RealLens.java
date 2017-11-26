@@ -69,12 +69,9 @@ public abstract class RealLens extends AbstractLens<IInventory, ItemStack> {
     @SuppressWarnings("unchecked")
     @Override
     public InventoryAdapter<IInventory, ItemStack> getAdapter(Fabric<IInventory> inv, Inventory parent) {
-        if (inv instanceof ContainerFabric) {
-            return new MinecraftAdapter(inv, this, parent);
-        }
         IInventory base = inv.get(this.base);
         if (!(base instanceof InventoryAdapter)) {
-            return null; // TODO IInventory Wrapper
+            return new MinecraftAdapter(inv, this, parent);
         }
         return ((InventoryAdapter) base);
     }

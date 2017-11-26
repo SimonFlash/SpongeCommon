@@ -22,26 +22,38 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.spongepowered.common.item.inventory.lens.impl.comp;
+package org.spongepowered.common.item.inventory.lens.impl;
 
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import org.spongepowered.api.item.inventory.Inventory;
 import org.spongepowered.common.item.inventory.adapter.InventoryAdapter;
-import org.spongepowered.common.item.inventory.adapter.impl.comp.CraftingGridInventoryAdapter;
+import org.spongepowered.common.item.inventory.adapter.impl.MinecraftAdapter;
 import org.spongepowered.common.item.inventory.lens.Fabric;
+import org.spongepowered.common.item.inventory.lens.Lens;
 import org.spongepowered.common.item.inventory.lens.SlotProvider;
-import org.spongepowered.common.item.inventory.lens.comp.CraftingGridInventoryLens;
+import org.spongepowered.common.item.inventory.lens.impl.comp.OrderedInventoryLensImpl;
 
+@SuppressWarnings("rawtypes")
+public class DelegatingLens extends AbstractLens<IInventory, ItemStack> {
 
-public class CraftingGridInventoryLensImpl extends GridInventoryLensImpl implements CraftingGridInventoryLens<IInventory, ItemStack> {
+    private Lens<IInventory, ItemStack> delegate;
 
-    public CraftingGridInventoryLensImpl(int base, int width, int height, int stride, SlotProvider<IInventory, ItemStack> slots) {
-        super(base, width, height, stride, slots);
+    public DelegatingLens(int base, Lens<IInventory, ItemStack> lens, SlotProvider<IInventory, ItemStack> slots) {
+        super(base, lens.slotCount(), MinecraftAdapter.class, slots);
+        this.delegate = lens;
+        this.init(slots);
     }
 
     @Override
-    public InventoryAdapter<IInventory, ItemStack> getAdapter(Fabric<IInventory> fabric, Inventory parent) {
-        return new CraftingGridInventoryAdapter(fabric, this, parent);
+    protected void init(SlotProvider<IInventory, ItemStack> slots) {
+        this.addSpanningChild(new OrderedInventoryLensImpl(this.base, this.size, 1, slots));
+        this.addChild(delegate);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public InventoryAdapter<IInventory, ItemStack> getAdapter(Fabric<IInventory> inv, Inventory parent) {
+        return new MinecraftAdapter(inv, this, parent);
     }
 }

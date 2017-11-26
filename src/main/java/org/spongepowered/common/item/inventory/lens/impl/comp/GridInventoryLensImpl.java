@@ -34,6 +34,8 @@ import org.spongepowered.common.item.inventory.lens.SlotProvider;
 import org.spongepowered.common.item.inventory.lens.comp.GridInventoryLens;
 import org.spongepowered.common.item.inventory.lens.comp.InventoryColumnLens;
 import org.spongepowered.common.item.inventory.lens.comp.InventoryRowLens;
+import org.spongepowered.common.item.inventory.lens.impl.MinecraftFabric;
+import org.spongepowered.common.item.inventory.lens.impl.fabric.ContainerFabric;
 import org.spongepowered.common.item.inventory.lens.impl.struct.LensHandle;
 
 import java.util.ArrayList;
@@ -119,8 +121,18 @@ public class GridInventoryLensImpl extends Inventory2DLensImpl implements GridIn
     }
 
     @Override
-    public InventoryAdapter<IInventory, ItemStack> getAdapter(Fabric<IInventory> inv, Inventory parent) {
-        return new GridInventoryAdapter(inv, this, parent);
+    public InventoryAdapter<IInventory, ItemStack> getAdapter(Fabric<IInventory> fabric, Inventory parent) {
+        IInventory inventory = fabric.get(this.base);
+        if (inventory.getClass() == this.adapterType) {
+            return ((InventoryAdapter) inventory);
+        }
+        if (fabric instanceof ContainerFabric) {
+            inventory = MinecraftFabric.of(inventory).get(this.base);
+            if (inventory.getClass() == this.adapterType) {
+                return ((InventoryAdapter) inventory);
+            }
+        }
+        return new GridInventoryAdapter(fabric, this, parent);
     }
 
 }

@@ -36,6 +36,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.common.entity.projectile.ProjectileLauncher;
+import org.spongepowered.common.item.inventory.adapter.InventoryAdapter;
 import org.spongepowered.common.item.inventory.lens.impl.collections.SlotCollection;
 import org.spongepowered.common.item.inventory.lens.impl.comp.GridInventoryLensImpl;
 
@@ -47,10 +48,9 @@ public abstract class MixinTileEntityDispenser extends MixinTileEntityLockableLo
 
     @Inject(method = "<init>", at = @At("RETURN"))
     public void onConstructed(CallbackInfo ci) {
-        this.slots = new SlotCollection.Builder()
-                .add(9)
-                .build();
-        this.lens = new GridInventoryLensImpl(0, 3, 3, 3, this.slots);
+        Class<? extends InventoryAdapter> thisClass = ((Class) this.getClass());
+        this.slots = new SlotCollection.Builder().add(9).build();
+        this.lens = new GridInventoryLensImpl(0, 3, 3, 3, thisClass, this.slots);
     }
 
     @Override

@@ -98,12 +98,9 @@ public abstract class MixinTileEntityHopper extends MixinTileEntityLockableLoot 
     @SuppressWarnings({"unchecked", "rawtypes"})
     @Inject(method = "<init>", at = @At("RETURN"))
     public void onConstructed(CallbackInfo ci) {
-        ReusableLens<? extends Lens<IInventory, ItemStack>> reusableLens = RealLens.getLens(GridInventoryLens.class,
-                ((InventoryAdapter) this),
-                s -> new GridInventoryLensImpl(0, 5, 1, 5, s),
-                () -> new SlotCollection.Builder().add(5).build());
-        this.slots = reusableLens.getSlots();
-        this.lens = reusableLens.getLens();
+        Class<? extends InventoryAdapter> thisClass = ((Class) this.getClass());
+        this.slots = new SlotCollection.Builder().add(5).build();
+        this.lens = new GridInventoryLensImpl(0, 5, 1, 5, thisClass, this.slots);
     }
 
     @Inject(method = "putDropInInventoryAllSlots", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/item/EntityItem;getItem()Lnet/minecraft/item/ItemStack;"))

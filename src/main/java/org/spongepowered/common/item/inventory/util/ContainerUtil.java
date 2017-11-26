@@ -80,6 +80,7 @@ import org.spongepowered.common.item.inventory.lens.LensProvider;
 import org.spongepowered.common.item.inventory.lens.comp.CraftingInventoryLens;
 import org.spongepowered.common.item.inventory.lens.comp.GridInventoryLens;
 import org.spongepowered.common.item.inventory.lens.comp.Inventory2DLens;
+import org.spongepowered.common.item.inventory.lens.impl.DelegatingLens;
 import org.spongepowered.common.item.inventory.lens.impl.MinecraftFabric;
 import org.spongepowered.common.item.inventory.lens.impl.collections.SlotCollection;
 import org.spongepowered.common.item.inventory.lens.impl.comp.CraftingInventoryLensImpl;
@@ -250,9 +251,10 @@ public final class ContainerUtil {
                 // TODO the lenses in "slots" are not used in this lens and thus cannot be found later
                 Lens<IInventory, ItemStack> adapterLens = ((InventoryAdapter) subInventory).getRootLens();
                 if (adapterLens != null) {
-                    lens = copyLens(index, ((InventoryAdapter) subInventory), adapterLens, slots);
                     if (adapterLens instanceof PlayerInventoryLens) {
                         playerLens = true;
+                    } else {
+                        lens = new DelegatingLens(index, adapterLens, slots);
                     }
                 }
             }
@@ -274,7 +276,7 @@ public final class ContainerUtil {
                     lens = new SlotLensImpl(index);
                 } else if ((lens instanceof PlayerInventoryLens || playerLens) && slotCount == 36) { // Player
                     // Player Inventory + Hotbar
-                    lenses.add(new MainPlayerInventoryLensImpl(index, slots));
+                    lenses.add(new DelegatingLens(index, new MainPlayerInventoryLensImpl(index, slots), slots));
                     //lenses.add(new GridInventoryLensImpl(index, 9, 3, 9, slots));
                     //lenses.add(new HotbarLensImpl(index + 27, 9, slots));
                     lens = null;

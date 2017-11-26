@@ -41,9 +41,11 @@ import org.spongepowered.common.item.inventory.adapter.impl.MinecraftInventoryAd
 import org.spongepowered.common.item.inventory.lens.Fabric;
 import org.spongepowered.common.item.inventory.lens.Lens;
 import org.spongepowered.common.item.inventory.lens.SlotProvider;
+import org.spongepowered.common.item.inventory.lens.impl.MinecraftFabric;
 import org.spongepowered.common.item.inventory.lens.impl.RealLens;
 import org.spongepowered.common.item.inventory.lens.impl.ReusableLens;
 import org.spongepowered.common.item.inventory.lens.impl.collections.SlotCollection;
+import org.spongepowered.common.item.inventory.lens.impl.fabric.CompoundFabric;
 import org.spongepowered.common.item.inventory.lens.impl.fabric.IInventoryFabric;
 import org.spongepowered.common.item.inventory.lens.impl.minecraft.LargeChestInventoryLens;
 
@@ -61,13 +63,9 @@ public abstract class MixinInventoryLargeChest implements MinecraftInventoryAdap
 
     @Inject(method = "<init>", at = @At("RETURN"), remap = false)
     private void onConstructed(CallbackInfo ci) {
-        this.inventory = new IInventoryFabric((IInventory) this);
-        ReusableLens<LargeChestInventoryLens> reuseLens = RealLens.getLens(LargeChestInventoryLens.class,
-                this,
-                s -> new LargeChestInventoryLens(this, s),
-                () -> new SlotCollection.Builder().add(this.inventory.getSize()).build());
-        this.slots = reuseLens.getSlots();
-        this.lens = reuseLens.getLens();
+        this.inventory = MinecraftFabric.of(this);
+        this.slots = new SlotCollection.Builder().add(this.inventory.getSize()).build();
+        this.lens = new LargeChestInventoryLens(this, this.slots);
     }
 
     @Override

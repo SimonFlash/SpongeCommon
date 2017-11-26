@@ -73,8 +73,8 @@ public class MainPlayerInventoryLensImpl extends GridInventoryLensImpl implement
     }
 
     @Override
-    public InventoryAdapter<IInventory, ItemStack> getAdapter(Fabric<IInventory> inv, Inventory parent) {
-        return new MainPlayerInventoryAdapter(inv, this, parent);
+    public InventoryAdapter<IInventory, ItemStack> getAdapter(Fabric<IInventory> fabric, Inventory parent) {
+        return new MainPlayerInventoryAdapter(fabric, this, parent);
     }
 
     @Override
