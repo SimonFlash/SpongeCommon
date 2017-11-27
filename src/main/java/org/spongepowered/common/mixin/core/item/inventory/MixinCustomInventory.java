@@ -44,6 +44,7 @@ import org.spongepowered.common.item.inventory.custom.CustomInventory;
 import org.spongepowered.common.item.inventory.custom.CustomLens;
 import org.spongepowered.common.item.inventory.lens.Fabric;
 import org.spongepowered.common.item.inventory.lens.Lens;
+import org.spongepowered.common.item.inventory.lens.SlotProvider;
 import org.spongepowered.common.item.inventory.lens.impl.MinecraftFabric;
 import org.spongepowered.common.item.inventory.lens.impl.collections.SlotCollection;
 import org.spongepowered.common.item.inventory.observer.InventoryEventArgs;
@@ -106,5 +107,10 @@ public abstract class MixinCustomInventory implements MinecraftInventoryAdapter<
     @Override
     public PluginContainer getPlugin() {
         return this.plugin;
+    }
+
+    @Override
+    public SlotProvider<IInventory, ItemStack> getSlotProvider() {
+        return this.slots;
     }
 }

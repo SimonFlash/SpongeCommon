@@ -146,7 +146,7 @@ public abstract class MixinTileEntityLockable extends MixinTileEntity implements
 
     public ReusableLens<?> generateLens() {
         SlotCollection slots = new SlotCollection.Builder().add(this.getSizeInventory()).build();
-        OrderedInventoryLensImpl lens = new OrderedInventoryLensImpl(0, this.getSizeInventory(), 1, inventory$getSlotProvider());
+        OrderedInventoryLensImpl lens = new OrderedInventoryLensImpl(0, this.getSizeInventory(), 1, slots);
         return new ReusableLens<>(slots, lens);
     }
 

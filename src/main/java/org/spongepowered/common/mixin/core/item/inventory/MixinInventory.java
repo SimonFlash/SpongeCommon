@@ -52,6 +52,7 @@ import org.spongepowered.common.entity.player.SpongeUser;
 import org.spongepowered.common.interfaces.IMixinContainer;
 import org.spongepowered.common.item.inventory.EmptyInventoryImpl;
 import org.spongepowered.common.item.inventory.adapter.impl.MinecraftInventoryAdapter;
+import org.spongepowered.common.item.inventory.adapter.impl.SlotCollectionIterator;
 import org.spongepowered.common.item.inventory.custom.CustomContainer;
 import org.spongepowered.common.item.inventory.custom.CustomInventory;
 import org.spongepowered.common.item.inventory.lens.SlotProvider;
@@ -80,7 +81,6 @@ public abstract class MixinInventory implements MinecraftInventoryAdapter<IInven
     protected EmptyInventory empty;
     protected Inventory parent;
     protected Inventory next;
-    protected SlotCollection slots;
     protected List<Inventory> children = new ArrayList<Inventory>();
     protected Iterable<Slot> slotIterator;
 
@@ -106,11 +106,6 @@ public abstract class MixinInventory implements MinecraftInventoryAdapter<IInven
     @Override
     public <T extends Inventory> T next() {
         return (T) this.emptyInventory(); // TODO implement me
-    }
-
-    @Override
-    public SlotProvider<IInventory, net.minecraft.item.ItemStack> getSlotProvider() {
-        return this.slots;
     }
 
     @Override
@@ -142,7 +137,7 @@ public abstract class MixinInventory implements MinecraftInventoryAdapter<IInven
     @Override
     public <T extends Inventory> Iterable<T> slots() {
         if (this.slotIterator == null) {
-            this.slotIterator = this.slots.getIterator(this);
+            this.slotIterator = new SlotCollectionIterator<>(this, this.getInventory(), this.getRootLens(), this.getSlotProvider());
         }
         return (Iterable<T>) this.slotIterator;
     }

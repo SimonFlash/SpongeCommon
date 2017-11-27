@@ -33,6 +33,7 @@ import org.spongepowered.api.item.inventory.Slot;
 import org.spongepowered.common.item.inventory.adapter.impl.slots.SlotAdapter;
 import org.spongepowered.common.item.inventory.lens.Fabric;
 import org.spongepowered.common.item.inventory.lens.Lens;
+import org.spongepowered.common.item.inventory.lens.SlotProvider;
 import org.spongepowered.common.item.inventory.lens.impl.collections.SlotCollection;
 import org.spongepowered.common.item.inventory.lens.slots.SlotLens;
 
@@ -47,13 +48,13 @@ public class SlotCollectionIterator<TInventory> implements Iterable<Slot> {
     
     private final List<Slot> slots;
 
-    public SlotCollectionIterator(Inventory parent, Fabric<TInventory> inv, Lens<TInventory, ItemStack> lens, SlotCollection slots) {
+    public SlotCollectionIterator(Inventory parent, Fabric<TInventory> inv, Lens<TInventory, ItemStack> lens, SlotProvider<IInventory, ItemStack> slots) {
         this.parent = parent;
         this.inv = inv;
         this.slots = this.traverseSpanningTree(inv, lens, slots, ImmutableList.<Slot>builder()).build();
     }
     
-    private Builder<Slot> traverseSpanningTree(Fabric<TInventory> inv, Lens<TInventory, ItemStack> lens, SlotCollection slots, Builder<Slot> list) {
+    private Builder<Slot> traverseSpanningTree(Fabric<TInventory> inv, Lens<TInventory, ItemStack> lens, SlotProvider<IInventory, ItemStack> slots, Builder<Slot> list) {
         for (Lens<TInventory, ItemStack> child : lens.getSpanningChildren()) {
             if (child instanceof SlotLens) {
                 list.add((SlotAdapter) child.getAdapter(inv, this.parent));
